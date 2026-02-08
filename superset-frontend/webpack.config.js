@@ -467,6 +467,18 @@ const config = {
       This prevents "Module not found" errors for moment locale files.
       */
       'moment/min/moment-with-locales': false,
+      // Temporary workaround to allow Storybook 8 to work with existing React v16-compatible stories.
+      // Remove below alias once React has been upgreade to v18.
+      '@storybook/react-dom-shim': path.resolve(
+        path.join(
+          APP_DIR,
+          './node_modules/@storybook/react-dom-shim/dist/react-16',
+        ),
+      ),
+      '@superset-ui/plugin-chart-unified-list-bar': path.resolve(
+        APP_DIR,
+        'plugins/plugin-chart-unified-list-bar/src',
+      ),
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.yml'],
     fallback: {
@@ -532,11 +544,11 @@ const config = {
           isDevMode
             ? 'style-loader'
             : {
-                loader: MiniCssExtractPlugin.loader,
-                options: {
-                  publicPath: MINI_CSS_EXTRACT_PUBLICPATH,
-                },
+              loader: MiniCssExtractPlugin.loader,
+              options: {
+                publicPath: MINI_CSS_EXTRACT_PUBLICPATH,
               },
+            },
           {
             loader: 'css-loader',
             options: {
@@ -623,13 +635,13 @@ const config = {
   devtool: isDevMode ? 'eval-cheap-module-source-map' : false,
   watchOptions: isDevMode
     ? {
-        // Watch all plugin and package source directories
-        ignored: ['**/node_modules', '**/.git', '**/lib', '**/esm', '**/dist'],
-        // Poll less frequently to reduce file handles
-        poll: 2000,
-        // Aggregate changes for 500ms before rebuilding
-        aggregateTimeout: 500,
-      }
+      // Watch all plugin and package source directories
+      ignored: ['**/node_modules', '**/.git', '**/lib', '**/esm', '**/dist'],
+      // Poll less frequently to reduce file handles
+      poll: 2000,
+      // Aggregate changes for 500ms before rebuilding
+      aggregateTimeout: 500,
+    }
     : undefined,
 };
 
