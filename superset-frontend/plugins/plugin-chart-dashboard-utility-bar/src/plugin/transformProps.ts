@@ -90,13 +90,19 @@ export default function transformProps(
         autoHideSeconds = 0,
         backgroundColor,
         textColor,
-        titleFontSize = 15,
-        dateFontSize = 11,
-        clockFontSize = 16,
-        weatherIconSize = 18,
-        temperatureFontSize = 13,
-        showTemperature = true,
-    } = formData;
+        titleFontSize,
+        title_font_size: titleFontSizeSnake,
+        dateFontSize,
+        date_font_size: dateFontSizeSnake,
+        clockFontSize,
+        clock_font_size: clockFontSizeSnake,
+        weatherIconSize,
+        weather_icon_size: weatherIconSizeSnake,
+        temperatureFontSize,
+        temperature_font_size: temperatureFontSizeSnake,
+        showTemperature,
+        show_temperature: showTemperatureSnake,
+    } = formData as any;
 
     // Safely extract data — handle undefined / empty queriesData
     const data = (queriesData?.[0]?.data as TimeseriesDataRecord[]) ?? [];
@@ -138,12 +144,17 @@ export default function transformProps(
         backgroundColor: rgbaToString(backgroundColor, 'rgba(30, 30, 30, 0.95)'),
         textColor: rgbaToString(textColor, 'rgba(255, 255, 255, 1)'),
 
-        titleFontSize: Number(titleFontSize) || 15,
-        dateFontSize: Number(dateFontSize) || 11,
-        clockFontSize: Number(clockFontSize) || 16,
-        weatherIconSize: Number(weatherIconSize) || 18,
-        temperatureFontSize: Number(temperatureFontSize) || 13,
-        showTemperature,
+        titleFontSize: Number(titleFontSize ?? titleFontSizeSnake ?? 15) || 15,
+        dateFontSize: Number(dateFontSize ?? dateFontSizeSnake ?? 11) || 11,
+        clockFontSize: Number(clockFontSize ?? clockFontSizeSnake ?? 16) || 16,
+        weatherIconSize: Number(weatherIconSize ?? weatherIconSizeSnake ?? 18) || 18,
+        temperatureFontSize: Number(temperatureFontSize ?? temperatureFontSizeSnake ?? 13) || 13,
+        showTemperature: (() => {
+            const raw = showTemperature ?? showTemperatureSnake;
+            if (raw === undefined || raw === null) return true;
+            if (raw === false || raw === 0 || raw === 'false') return false;
+            return true;
+        })(),
     };
 
     return { width, height, data, customize };

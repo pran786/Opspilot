@@ -2130,6 +2130,7 @@ TALISMAN_CONFIG = {
             "https://tile.openstreetmap.org",
             "https://tile.osm.ch",
             "https://a.basemaps.cartocdn.com",
+            "https://wttr.in",
         ],
         "object-src": "'none'",
         "style-src": [
@@ -2170,6 +2171,8 @@ TALISMAN_DEV_CONFIG = {
             "https://tile.openstreetmap.org",
             "https://tile.osm.ch",
             "https://a.basemaps.cartocdn.com",
+            "https://api.open-meteo.com",
+            "https://wttr.in",
         ],
         "object-src": "'none'",
         "style-src": [
