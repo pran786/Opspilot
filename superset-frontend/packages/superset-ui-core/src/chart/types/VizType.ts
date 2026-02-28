@@ -67,4 +67,5 @@ export enum VizType {
   UnifiedListBar = 'unified_list_bar',
   UnifiedListArrow = 'unified_list_arrow',
   DashboardUtilityBar = 'dashboard_utility_bar',
+  KpiDualColumnCard = 'kpi_dual_column_card',
 }

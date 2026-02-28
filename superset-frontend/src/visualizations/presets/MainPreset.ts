@@ -92,6 +92,7 @@ import TimeTableChartPlugin from '../TimeTable';
 import UnifiedListBarChartPlugin from '@superset-ui/plugin-chart-unified-list-bar';
 import UnifiedListArrowChartPlugin from '@superset-ui/plugin-chart-unified-list-arrow';
 import DashboardUtilityBarChartPlugin from '@superset-ui/plugin-chart-dashboard-utility-bar';
+import KpiDualColumnCardChartPlugin from '@superset-ui/plugin-chart-kpi-dual-column-card';
 
 export default class MainPreset extends Preset {
   constructor() {
@@ -116,6 +117,7 @@ export default class MainPreset extends Preset {
         new UnifiedListBarChartPlugin().configure({ key: VizType.UnifiedListBar }),
         new UnifiedListArrowChartPlugin().configure({ key: VizType.UnifiedListArrow }),
         new DashboardUtilityBarChartPlugin().configure({ key: VizType.DashboardUtilityBar }),
+        new KpiDualColumnCardChartPlugin().configure({ key: VizType.KpiDualColumnCard }),
         new BigNumberChartPlugin().configure({ key: VizType.BigNumber }),
         new BigNumberTotalChartPlugin().configure({
           key: VizType.BigNumberTotal,
