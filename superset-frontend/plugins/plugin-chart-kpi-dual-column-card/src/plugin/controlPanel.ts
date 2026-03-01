@@ -19,6 +19,7 @@
 import { t } from '@apache-superset/core';
 import { validateNonEmpty } from '@superset-ui/core';
 import { ControlPanelConfig, sections, sharedControls } from '@superset-ui/chart-controls';
+import ImageUploadControl from './ImageUploadControl';
 
 const config: ControlPanelConfig = {
     controlPanelSections: [
@@ -113,7 +114,8 @@ const config: ControlPanelConfig = {
                             choices: [
                                 ['none', t('None')],
                                 ['antd', t('Built-in Icon (Ant Design)')],
-                                ['svg_url', t('Custom SVG URL')],
+                                ['svg_url', t('Custom Image URL')],
+                                ['upload', t('Upload Image')],
                             ],
                             renderTrigger: true,
                         },
@@ -138,12 +140,26 @@ const config: ControlPanelConfig = {
                         name: 'svg_url',
                         config: {
                             type: 'TextControl',
-                            label: t('SVG URL'),
-                            description: t('URL to a .svg image file'),
+                            label: t('Image URL'),
+                            description: t('URL to an image file (SVG, PNG, JPG, etc.)'),
                             default: '',
                             renderTrigger: true,
                             visibility: ({ controls }: any) =>
                                 controls?.icon_type?.value === 'svg_url',
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'uploaded_icon',
+                        config: {
+                            type: ImageUploadControl,
+                            label: t('Upload Icon'),
+                            description: t('Upload a PNG, SVG, or JPG image (max 100 KB)'),
+                            default: '',
+                            renderTrigger: true,
+                            visibility: ({ controls }: any) =>
+                                controls?.icon_type?.value === 'upload',
                         },
                     },
                 ],

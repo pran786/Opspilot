@@ -20,7 +20,7 @@ import { QueryFormData, TimeseriesDataRecord } from '@superset-ui/core';
 
 // ── Header / Icon enums ────────────────────────────────────────────
 export type HeaderMode = 'none' | 'icon_above_value' | 'icon_centered';
-export type IconType = 'none' | 'antd' | 'svg_url';
+export type IconType = 'none' | 'antd' | 'svg_url' | 'upload';
 export type TextTransform = 'none' | 'uppercase' | 'capitalize';
 export type Alignment = 'left' | 'center' | 'right';
 
@@ -37,6 +37,7 @@ export interface KpiDualColumnCardCustomizeProps {
     iconType: IconType;
     iconName: string;
     svgUrl: string;
+    uploadedIcon: string;
     iconSize: number;
     iconColor: string;
     iconSpacing: number;

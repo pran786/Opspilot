@@ -16,7 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import React, { useMemo, Suspense } from 'react';
+import React, { useMemo, useRef, useState, useEffect, Suspense } from 'react';
 import styled from '@emotion/styled';
 import { KpiDualColumnCardProps } from './types';
 
@@ -89,6 +89,12 @@ const KeyCell = styled.span<{
     line-height: 1.4;
 `;
 
+const ValueColumnWrapper = styled.div`
+    flex-shrink: 0;
+    display: flex;
+    justify-content: flex-end;
+`;
+
 const ValueCell = styled.span<{
     fontSize: number;
     fontWeight: number;
@@ -98,13 +104,16 @@ const ValueCell = styled.span<{
     boxColor: string;
     padding: number;
     borderRadius: number;
+    uniformWidth: number;
 }>`
-    flex-shrink: 0;
     font-size: ${({ fontSize }) => fontSize}px;
     font-weight: ${({ fontWeight }) => fontWeight};
     color: ${({ color }) => color};
     text-transform: ${({ transform }) => transform};
     line-height: 1.4;
+    text-align: center;
+    ${({ uniformWidth }) =>
+        uniformWidth > 0 ? `min-width: ${uniformWidth}px;` : ''}
     ${({ hasBox, boxColor, padding, borderRadius }) =>
         hasBox
             ? `
@@ -114,6 +123,15 @@ const ValueCell = styled.span<{
         display: inline-block;
       `
             : ''}
+`;
+
+/** Hidden off-screen container used to measure the widest value text */
+const MeasureContainer = styled.div`
+    position: absolute;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+    white-space: nowrap;
 `;
 
 // ─── Dynamic Ant Design icon renderer ──────────────────────────────
@@ -161,6 +179,7 @@ export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
         iconType,
         iconName,
         svgUrl,
+        uploadedIcon,
         iconSize,
         iconColor,
         iconSpacing,
@@ -180,6 +199,34 @@ export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
         enableShadow,
     } = customize;
 
+    // ── Measure uniform value‑box width ────────────────────────────
+    const measureRef = useRef<HTMLDivElement>(null);
+    const [uniformWidth, setUniformWidth] = useState(0);
+
+    // Check if any row has a box color
+    const hasAnyBox = useMemo(
+        () =>
+            data.some(
+                (r) => valBoxColorColumn && !!r[valBoxColorColumn],
+            ),
+        [data, valBoxColorColumn],
+    );
+
+    useEffect(() => {
+        if (!measureRef.current || !hasAnyBox) {
+            setUniformWidth(0);
+            return;
+        }
+        const children = measureRef.current.children;
+        let maxW = 0;
+        for (let i = 0; i < children.length; i++) {
+            const w = (children[i] as HTMLElement).offsetWidth;
+            if (w > maxW) maxW = w;
+        }
+        // Add box padding (horizontal = padding * 1.5 * 2)
+        setUniformWidth(maxW + valuePadding * 1.5 * 2);
+    }, [data, valueColumn, valueFontSize, valueFontWeight, textTransform, valuePadding, hasAnyBox]);
+
     // ── Render icon ────────────────────────────────────────────────
     const renderIcon = () => {
         if (headerMode === 'none') return null;
@@ -198,6 +245,16 @@ export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
             iconElement = (
                 <img
                     src={svgUrl}
+                    alt="icon"
+                    width={iconSize}
+                    height={iconSize}
+                    style={{ objectFit: 'contain' }}
+                />
+            );
+        } else if (iconType === 'upload' && uploadedIcon) {
+            iconElement = (
+                <img
+                    src={uploadedIcon}
                     alt="icon"
                     width={iconSize}
                     height={iconSize}
@@ -227,6 +284,26 @@ export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
             padding={containerPadding}
             shadow={enableShadow}
         >
+            {/* Hidden measurement container for uniform box sizing */}
+            {hasAnyBox && (
+                <MeasureContainer ref={measureRef}>
+                    {data.map((record, idx) => (
+                        <span
+                            key={idx}
+                            style={{
+                                fontSize: valueFontSize,
+                                fontWeight: valueFontWeight,
+                                textTransform: textTransform as any,
+                                display: 'inline-block',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            {String(record[valueColumn] ?? '')}
+                        </span>
+                    ))}
+                </MeasureContainer>
+            )}
+
             {renderIcon()}
 
             {data.map((record, index) => {
@@ -260,18 +337,21 @@ export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
                             {String(key)}
                         </KeyCell>
 
-                        <ValueCell
-                            fontSize={valueFontSize}
-                            fontWeight={valueFontWeight}
-                            color={valColor}
-                            transform={textTransform}
-                            hasBox={!!boxColor}
-                            boxColor={boxColor}
-                            padding={valuePadding}
-                            borderRadius={borderRadius}
-                        >
-                            {String(val)}
-                        </ValueCell>
+                        <ValueColumnWrapper>
+                            <ValueCell
+                                fontSize={valueFontSize}
+                                fontWeight={valueFontWeight}
+                                color={valColor}
+                                transform={textTransform}
+                                hasBox={!!boxColor}
+                                boxColor={boxColor}
+                                padding={valuePadding}
+                                borderRadius={borderRadius}
+                                uniformWidth={boxColor ? uniformWidth : 0}
+                            >
+                                {String(val)}
+                            </ValueCell>
+                        </ValueColumnWrapper>
                     </RowWrapper>
                 );
             })}

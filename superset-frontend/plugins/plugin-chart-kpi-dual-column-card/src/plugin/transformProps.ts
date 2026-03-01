@@ -61,6 +61,7 @@ export default function transformProps(chartProps: ChartProps): KpiDualColumnCar
     const iconType = (getProp('icon_type', 'iconType', 'none') as IconType);
     const iconName = String(getProp('icon_name', 'iconName', '') || '');
     const svgUrl = String(getProp('svg_url', 'svgUrl', '') || '');
+    const uploadedIcon = String(getProp('uploaded_icon', 'uploadedIcon', '') || '');
     const iconSize = Number(getProp('icon_size', 'iconSize', 32)) || 32;
     const iconColor = String(getProp('icon_color', 'iconColor', '#333333') || '#333333');
     const iconSpacing = Number(getProp('icon_spacing', 'iconSpacing', 12)) || 12;
@@ -94,6 +95,7 @@ export default function transformProps(chartProps: ChartProps): KpiDualColumnCar
         iconType,
         iconName,
         svgUrl,
+        uploadedIcon,
         iconSize,
         iconColor,
         iconSpacing,
