@@ -2122,6 +2122,7 @@ TALISMAN_CONFIG = {
             "'self'",
             "blob:",
             "data:",
+            "https:",
             "https://apachesuperset.gateway.scarf.sh",
             "https://static.scarf.sh/",
             # "https://cdn.brandfolder.io", # Uncomment when SLACK_ENABLE_AVATARS is True  # noqa: E501
@@ -2163,6 +2164,7 @@ TALISMAN_DEV_CONFIG = {
             "'self'",
             "blob:",
             "data:",
+            "https:",
             "https://apachesuperset.gateway.scarf.sh",
             "https://static.scarf.sh/",
             "https://cdn.brandfolder.io",
