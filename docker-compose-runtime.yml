@@ -1,7 +1,8 @@
 version: "3.9"
 
-x-superset-user: &superset-user root
+x-superset-user: &superset-user superset
 x-superset-volumes: &superset-volumes
+  - ./docker:/app/docker:ro
   - superset_home:/app/superset_home
   - superset_data:/app/data
 
@@ -34,13 +35,15 @@ services:
       - db_home:/var/lib/postgresql/data
 
   superset:
-    image: apache/superset:latest   # or pin version e.g. apache/superset:4.1.0
+    image: eenera-llc-superset-superset:latest
     restart: unless-stopped
     user: *superset-user
+    environment:
+      DEV_MODE: "false"
     env_file:
       - docker/.env
       - docker/.env-local
-    command: ["/app/docker/docker-bootstrap.sh", "app"]
+    command: ["/app/docker/docker-bootstrap.sh", "app-gunicorn"]
     ports:
       - "${SUPERSET_PORT:-8088}:8088"
     depends_on:
@@ -49,9 +52,11 @@ services:
     volumes: *superset-volumes
 
   superset-worker:
-    image: apache/superset:latest
+    image: eenera-llc-superset-superset:latest
     restart: unless-stopped
     user: *superset-user
+    environment:
+      DEV_MODE: "false"
     env_file:
       - docker/.env
       - docker/.env-local
@@ -62,9 +67,11 @@ services:
     volumes: *superset-volumes
 
   superset-worker-beat:
-    image: apache/superset:latest
+    image: eenera-llc-superset-superset:latest
     restart: unless-stopped
     user: *superset-user
+    environment:
+      DEV_MODE: "false"
     env_file:
       - docker/.env
       - docker/.env-local

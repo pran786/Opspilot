@@ -22,21 +22,21 @@ import buildQuery from './buildQuery';
 import controlPanel from './controlPanel';
 import transformProps from './transformProps';
 
-export default class DashboardUtilityBarChartPlugin extends ChartPlugin {
-    constructor() {
-        super({
-            metadata: new ChartMetadata({
-                name: t('Dashboard Utility Bar'),
-                description: t(
-                    'A versatile dashboard utility bar providing live clock, date, weather, KPIs, and scrolling ticker messages in header or overlay modes.',
-                ),
-                thumbnail: '',
-                canBeAnnotationTypes: [],
-            }),
-            buildQuery,
-            controlPanel,
-            transformProps,
-            loadChart: () => import('../DashboardUtilityBar'),
-        });
-    }
+export default class BulkLoadingCardChartPlugin extends ChartPlugin {
+  constructor() {
+    super({
+      metadata: new ChartMetadata({
+        name: t('Bulk Loading Card'),
+        description: t(
+          'A specialized bulk tanker loading operational widget showing Work Order IDs, tanker illustration, status pipeline badges, destination tanks, and countdown timers.',
+        ),
+        thumbnail: '',
+        canBeAnnotationTypes: ['EVENT', 'INTERVAL'],
+      }),
+      buildQuery,
+      controlPanel,
+      transformProps,
+      loadChart: () => import('../BulkLoadingCardChart'),
+    });
+  }
 }

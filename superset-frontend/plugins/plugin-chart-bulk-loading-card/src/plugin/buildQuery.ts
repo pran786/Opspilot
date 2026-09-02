@@ -16,18 +16,36 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export default function UnifiedListArrowChart(props: UnifiedListBarChartProps) {
-    const { data, height, width, customize } = props;
+import {
+  buildQueryContext,
+  QueryFormData,
+  QueryFormColumn,
+} from '@superset-ui/core';
 
-    return (
-        <Styles height={height} width={width}>
-            {data.map((record, index) => (
-                <Row
-                    key={index}
-                    record={record}
-                    customize={customize}
-                />
-            ))}
-        </Styles>
-    );
+export default function buildQuery(formData: QueryFormData) {
+  const columns: QueryFormColumn[] = [];
+
+  const addCol = (col?: QueryFormColumn) => {
+    if (col && !columns.includes(col)) {
+      columns.push(col);
+    }
+  };
+
+  addCol(formData.work_order_column);
+  addCol(formData.material_name_column);
+  addCol(formData.secondary_id_column);
+  addCol(formData.status_column);
+  addCol(formData.destination_tank_column);
+  addCol(formData.elapsed_time_column);
+
+  if (Array.isArray(formData.groupby)) {
+    formData.groupby.forEach((col: QueryFormColumn) => addCol(col));
+  }
+
+  return buildQueryContext(formData, baseQueryObject => [
+    {
+      ...baseQueryObject,
+      columns,
+    },
+  ]);
 }

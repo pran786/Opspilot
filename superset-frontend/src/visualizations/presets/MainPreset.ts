@@ -93,6 +93,9 @@ import UnifiedListBarChartPlugin from '@superset-ui/plugin-chart-unified-list-ba
 import UnifiedListArrowChartPlugin from '@superset-ui/plugin-chart-unified-list-arrow';
 import DashboardUtilityBarChartPlugin from '@superset-ui/plugin-chart-dashboard-utility-bar';
 import KpiDualColumnCardChartPlugin from '@superset-ui/plugin-chart-kpi-dual-column-card';
+import ParkingSpotMatrixChartPlugin from '@superset-ui/plugin-chart-parking-spot-matrix';
+import BulkLoadingCardChartPlugin from '@superset-ui/plugin-chart-bulk-loading-card';
+import ElevatorStatusChartPlugin from '@superset-ui/plugin-chart-elevator-status';
 
 export default class MainPreset extends Preset {
   constructor() {
@@ -114,10 +117,13 @@ export default class MainPreset extends Preset {
       name: 'Legacy charts',
       presets: [new DeckGLChartPreset()],
       plugins: [
-        new UnifiedListBarChartPlugin().configure({ key: VizType.UnifiedListBar }),
-        new UnifiedListArrowChartPlugin().configure({ key: VizType.UnifiedListArrow }),
-        new DashboardUtilityBarChartPlugin().configure({ key: VizType.DashboardUtilityBar }),
-        new KpiDualColumnCardChartPlugin().configure({ key: VizType.KpiDualColumnCard }),
+        new UnifiedListBarChartPlugin().configure({ key: 'unified_list_bar' }),
+        new UnifiedListArrowChartPlugin().configure({ key: 'unified_list_arrow' }),
+        new DashboardUtilityBarChartPlugin().configure({ key: 'dashboard_utility_bar' }),
+        new KpiDualColumnCardChartPlugin().configure({ key: 'kpi_dual_column_card' }),
+        new ParkingSpotMatrixChartPlugin().configure({ key: 'parking_spot_matrix' }),
+        new BulkLoadingCardChartPlugin().configure({ key: 'bulk_loading_card' }),
+        new ElevatorStatusChartPlugin().configure({ key: 'elevator_status' }),
         new BigNumberChartPlugin().configure({ key: VizType.BigNumber }),
         new BigNumberTotalChartPlugin().configure({
           key: VizType.BigNumberTotal,

@@ -90,12 +90,6 @@ const config: ControlPanelConfig = {
                             ...sharedControls.groupby,
                             label: t('Secondary Column'),
                             description: t('First column on the right side'),
-                            multi: true, // Keeping multi to be safe with types/legacy, but user said "Secondary and Tertiary" - actually user said "two more columns... secondary and tertiary". Multi might be easier if they want more, but request creates specific layout slots. I'll use multi for flexibility or stick to single if I want strict slots.
-                            // The request says: "there will be two more columns which we will show as seconday and tertiary column."
-                            // If I use multi, I can just take the first two.
-                            // But I added `tertiaryColumn` to types. I should probably use `tertiary_column` control.
-                            // So I will make this `secondary_column` (singular name in label, but maybe code uses `secondary_columns` array? I'll stick to `secondary_columns` for now to minimize breakage if I can't change types easily, but I DID change types).
-                            // I'll make it `secondary_column` single select.
                             multi: false,
                         },
                     },

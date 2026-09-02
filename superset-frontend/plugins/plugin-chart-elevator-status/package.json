@@ -1,0 +1,26 @@
+{
+  "name": "@superset-ui/plugin-chart-elevator-status",
+  "version": "0.1.0",
+  "description": "Superset Chart - Elevator / Material Lift Status Visualizer",
+  "sideEffects": false,
+  "main": "lib/index.js",
+  "module": "esm/index.js",
+  "files": [
+    "esm",
+    "lib"
+  ],
+  "dependencies": {},
+  "peerDependencies": {
+    "@superset-ui/chart-controls": "*",
+    "@apache-superset/core": "*",
+    "@superset-ui/core": "*",
+    "@ant-design/icons": "^5.2.6",
+    "react": "^16.13.1 || ^17.0.0",
+    "react-dom": "^16.13.1 || ^17.0.0",
+    "@emotion/styled": "^11.0.0",
+    "@emotion/react": "^11.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
