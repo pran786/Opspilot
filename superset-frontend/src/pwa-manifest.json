@@ -1,12 +1,12 @@
 {
-  "name": "Apache Superset",
-  "short_name": "Superset",
-  "description": "Modern data exploration and visualization platform",
-  "start_url": "/superset/welcome/",
+  "name": "Opspilot",
+  "short_name": "Opspilot",
+  "description": "Opspilot Data Analytics & Visualization Platform",
+  "start_url": "/opspilot/welcome/",
   "scope": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#20a7c9",
+  "theme_color": "#2893B3",
   "icons": [
     {
       "src": "/static/assets/images/pwa/icon-192.png",
@@ -39,19 +39,19 @@
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
-      "label": "Apache Superset Dashboard"
+      "label": "Opspilot Dashboard"
     },
     {
       "src": "/static/assets/images/pwa/screenshot-narrow.png",
       "sizes": "540x720",
       "type": "image/png",
       "form_factor": "narrow",
-      "label": "Apache Superset Mobile View"
+      "label": "Opspilot Mobile View"
     }
   ],
   "file_handlers": [
     {
-      "action": "/superset/file-handler",
+      "action": "/opspilot/file-handler",
       "accept": {
         "text/csv": [".csv"],
         "application/vnd.ms-excel": [".xls"],

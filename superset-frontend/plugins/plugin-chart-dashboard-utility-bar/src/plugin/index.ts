@@ -28,8 +28,9 @@ export default class DashboardUtilityBarChartPlugin extends ChartPlugin {
             metadata: new ChartMetadata({
                 name: t('Dashboard Utility Bar'),
                 description: t(
-                    'A flexible dashboard utility bar with live clock, KPI display, notification ticker, and overlay support',
+                    'A versatile dashboard utility bar providing live clock, date, weather, KPIs, and scrolling ticker messages in header or overlay modes.',
                 ),
+                thumbnail: '',
                 canBeAnnotationTypes: [],
             }),
             buildQuery,

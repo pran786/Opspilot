@@ -638,15 +638,16 @@ const config = {
 
 // find all the symlinked plugins and use their source code for imports
 Object.entries(packageConfig.dependencies).forEach(([pkg, relativeDir]) => {
-  const srcPath = path.join(APP_DIR, `./node_modules/${pkg}/src`);
   const dir = relativeDir.replace('file:', '');
+  const localSrcPath = path.resolve(APP_DIR, `${dir}/src`);
+  const nodeModulesSrcPath = path.join(APP_DIR, `./node_modules/${pkg}/src`);
 
   if (
     (pkg.startsWith('@superset-ui') || pkg.startsWith('@apache-superset')) &&
-    fs.existsSync(srcPath)
+    (fs.existsSync(localSrcPath) || fs.existsSync(nodeModulesSrcPath))
   ) {
     console.log(`[Superset Plugin] Use symlink source for ${pkg} @ ${dir}`);
-    config.resolve.alias[pkg] = path.resolve(APP_DIR, `${dir}/src`);
+    config.resolve.alias[pkg] = localSrcPath;
   }
 });
 console.log(''); // pure cosmetic new line

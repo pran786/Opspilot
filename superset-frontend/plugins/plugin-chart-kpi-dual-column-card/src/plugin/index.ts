@@ -30,6 +30,7 @@ export default class KpiDualColumnCardChartPlugin extends ChartPlugin {
                 description: t(
                     'A vertical list of key-value rows with optional colored value boxes, icon headers, and fully customizable typography and layout.',
                 ),
+                thumbnail: '',
                 canBeAnnotationTypes: ['EVENT', 'INTERVAL'],
             }),
             buildQuery,

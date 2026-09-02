@@ -68,4 +68,7 @@ export enum VizType {
   UnifiedListArrow = 'unified_list_arrow',
   DashboardUtilityBar = 'dashboard_utility_bar',
   KpiDualColumnCard = 'kpi_dual_column_card',
+  ParkingSpotMatrix = 'parking_spot_matrix',
+  BulkLoadingCard = 'bulk_loading_card',
+  ElevatorStatus = 'elevator_status',
 }

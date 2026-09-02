@@ -291,7 +291,7 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         appbuilder.add_link(
             "Home",
             label=_("Home"),
-            href="/superset/welcome/",
+            href="/opspilot/welcome/",
             cond=lambda: bool(current_app.config["LOGO_TARGET_PATH"]),
         )
 
@@ -439,6 +439,8 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
         appbuilder.add_view_no_menu(SavedQueryView)
         appbuilder.add_view_no_menu(SqllabView)
         appbuilder.add_view_no_menu(Superset)
+        from superset.views.opspilot import OpspilotView
+        appbuilder.add_view_no_menu(OpspilotView)
         appbuilder.add_view_no_menu(TableModelView)
         appbuilder.add_view_no_menu(TableSchemaView)
         appbuilder.add_view_no_menu(TabStateView)
@@ -974,7 +976,7 @@ class SupersetAppInitializer:  # pylint: disable=too-many-public-methods
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self) -> FlaskResponse:
-        return redirect(url_for("Superset.welcome"))
+        return redirect(current_app.config.get("LOGO_TARGET_PATH") or "/opspilot/welcome/")
 
     @expose("/lang/<string:locale>")
     @safe

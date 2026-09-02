@@ -290,8 +290,8 @@ def menu_data(user: User) -> dict[str, Any]:
         },
         "environment_tag": get_environment_tag(),
         "navbar_right": {
-            # show the watermark if the default app icon has been overridden
-            "show_watermark": ("superset-logo-horiz" not in appbuilder.app_icon),
+            # show the watermark only if explicitly enabled
+            "show_watermark": app.config.get("SHOW_WATERMARK", False),
             "bug_report_url": app.config["BUG_REPORT_URL"],
             "bug_report_icon": app.config["BUG_REPORT_ICON"],
             "bug_report_text": app.config["BUG_REPORT_TEXT"],
@@ -589,9 +589,13 @@ def get_spa_template_context(
             or theme_tokens.get("brandAppName") == "Superset"
         ):
             # If brandAppName not set or is default, check if APP_NAME customized
-            if app_name_from_config != "Superset":
-                # User has customized APP_NAME, use it as brandAppName
-                theme_tokens["brandAppName"] = app_name_from_config
+            theme_tokens["brandAppName"] = app_name_from_config or "Opspilot"
+
+        if not theme_tokens.get("brandLogoAlt") or theme_tokens.get("brandLogoAlt") == "Apache Superset":
+            theme_tokens["brandLogoAlt"] = "Opspilot"
+
+        if not theme_tokens.get("brandLogoUrl"):
+            theme_tokens["brandLogoUrl"] = app.config.get("APP_ICON", "/static/assets/images/superset-logo-horiz.png")
 
     # Write the modified theme data back to payload
     if "common" not in payload:
@@ -612,7 +616,7 @@ def get_spa_template_context(
         spinner_svg = get_default_spinner_svg()
 
     # Determine default title using the (potentially updated) brandAppName
-    default_title = theme_tokens.get("brandAppName", "Superset")
+    default_title = theme_tokens.get("brandAppName", "Opspilot")
 
     return {
         "entry": entry,

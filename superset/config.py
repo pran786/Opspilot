@@ -351,20 +351,20 @@ AUTH_RATE_LIMIT = "5 per second"
 # ------------------------------
 # GLOBALS FOR APP Builder
 # ------------------------------
-# Uncomment to setup Your App name
-APP_NAME = "Superset"
+# Setup App name
+APP_NAME = "Opspilot"
 
 # Specify the App icon
 APP_ICON = "/static/assets/images/superset-logo-horiz.png"
 
-# Specify where clicking the logo would take the user'
-# Default value of None will take you to '/superset/welcome'
-# You can also specify a relative URL e.g. '/superset/welcome' or '/dashboards/list'
-# or you can specify a full URL e.g. 'https://foo.bar'
-LOGO_TARGET_PATH = None
+# Specify where clicking the logo would take the user
+LOGO_TARGET_PATH = "/opspilot/welcome/"
 
 # Specify tooltip that should appear when hovering over the App Icon/Logo
-LOGO_TOOLTIP = ""
+LOGO_TOOLTIP = "Opspilot"
+
+# Specify whether to show the watermark
+SHOW_WATERMARK = False
 
 # Specify any text that should appear to the right of the logo
 LOGO_RIGHT_TEXT: Callable[[], str] | str = ""
@@ -918,10 +918,10 @@ THEME_DEFAULT: Theme = {
         # Brand
         # Application name for window titles
         "brandAppName": APP_NAME,
-        "brandLogoAlt": "Apache Superset",
+        "brandLogoAlt": "Opspilot",
         "brandLogoUrl": APP_ICON,
         "brandLogoMargin": "18px 0",
-        "brandLogoHref": "/",
+        "brandLogoHref": "/opspilot/welcome/",
         "brandLogoHeight": "24px",
         # Spinner
         "brandSpinnerUrl": None,

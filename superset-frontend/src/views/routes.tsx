@@ -205,6 +205,22 @@ export const routes: Routes = [
     Component: Login,
   },
   {
+    path: '/opspilot/welcome/',
+    Component: Home,
+  },
+  {
+    path: '/opspilot/file-handler',
+    Component: FileHandler,
+  },
+  {
+    path: '/opspilot/dashboard/:idOrSlug/',
+    Component: Dashboard,
+  },
+  {
+    path: '/opspilot/dashboard/:idOrSlug',
+    Component: Dashboard,
+  },
+  {
     path: '/superset/welcome/',
     Component: Home,
   },
