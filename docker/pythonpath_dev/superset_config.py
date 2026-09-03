@@ -308,76 +308,87 @@ THEME_DARK = {
 
 
 def FLASK_APP_MUTATOR(app):
-    from flask import g, redirect, request
-    from flask_appbuilder import expose
-    from superset import db
-    from superset.extensions import appbuilder
-    from superset.models.user_attributes import UserAttribute
-    from superset.superset_typing import FlaskResponse
-    from superset.utils.core import get_user_id
-    from superset.views.base import (
-        BaseSupersetView,
-        bootstrap_user_data,
-        common_bootstrap_payload,
-    )
-    from superset.views.utils import redirect_to_login
+    from flask import redirect, request
 
-    class OpspilotView(BaseSupersetView):
-        route_base = "/opspilot"
-        class_permission_name = "Superset"
+    # Safely register OpspilotView if it was not already registered during core init
+    if "OpspilotView" not in app.blueprints:
+        try:
+            from superset.views.opspilot import OpspilotView
+            from superset.extensions import appbuilder
+            appbuilder.add_view_no_menu(OpspilotView)
+        except Exception:
+            try:
+                from flask import g
+                from flask_appbuilder import expose
+                from superset import db
+                from superset.extensions import appbuilder
+                from superset.models.user_attributes import UserAttribute
+                from superset.superset_typing import FlaskResponse
+                from superset.utils.core import get_user_id
+                from superset.views.base import (
+                    BaseSupersetView,
+                    bootstrap_user_data,
+                    common_bootstrap_payload,
+                )
+                from superset.views.utils import redirect_to_login
 
-        @expose("/welcome/")
-        @expose("/welcome")
-        def welcome(self) -> FlaskResponse:
-            if not g.user or not get_user_id():
-                return redirect_to_login()
+                class OpspilotView(BaseSupersetView):
+                    route_base = "/opspilot"
+                    class_permission_name = "Superset"
 
-            if welcome_dashboard_id := (
-                db.session.query(UserAttribute.welcome_dashboard_id)
-                .filter_by(user_id=get_user_id())
-                .scalar()
-            ):
-                return self.dashboard(dashboard_id_or_slug=str(welcome_dashboard_id))
+                    @expose("/welcome/")
+                    @expose("/welcome")
+                    def welcome(self) -> FlaskResponse:
+                        if not g.user or not get_user_id():
+                            return redirect_to_login()
 
-            payload = {
-                "user": bootstrap_user_data(g.user, include_perms=True),
-                "common": common_bootstrap_payload(),
-            }
+                        if welcome_dashboard_id := (
+                            db.session.query(UserAttribute.welcome_dashboard_id)
+                            .filter_by(user_id=get_user_id())
+                            .scalar()
+                        ):
+                            return self.dashboard(dashboard_id_or_slug=str(welcome_dashboard_id))
 
-            return self.render_app_template(extra_bootstrap_data=payload)
+                        payload = {
+                            "user": bootstrap_user_data(g.user, include_perms=True),
+                            "common": common_bootstrap_payload(),
+                        }
 
-        @expose("/dashboard/<path:dashboard_id_or_slug>/")
-        @expose("/dashboard/<path:dashboard_id_or_slug>")
-        def dashboard(self, dashboard_id_or_slug: str) -> FlaskResponse:
-            if not g.user or not get_user_id():
-                return redirect_to_login()
+                        return self.render_app_template(extra_bootstrap_data=payload)
 
-            payload = {
-                "user": bootstrap_user_data(g.user, include_perms=True),
-                "common": common_bootstrap_payload(),
-            }
+                    @expose("/dashboard/<path:dashboard_id_or_slug>/")
+                    @expose("/dashboard/<path:dashboard_id_or_slug>")
+                    def dashboard(self, dashboard_id_or_slug: str) -> FlaskResponse:
+                        if not g.user or not get_user_id():
+                            return redirect_to_login()
 
-            return self.render_app_template(extra_bootstrap_data=payload)
+                        payload = {
+                            "user": bootstrap_user_data(g.user, include_perms=True),
+                            "common": common_bootstrap_payload(),
+                        }
 
-        @expose("/file-handler")
-        @expose("/file-handler/")
-        def file_handler(self) -> FlaskResponse:
-            if not g.user or not get_user_id():
-                return redirect_to_login()
+                        return self.render_app_template(extra_bootstrap_data=payload)
 
-            payload = {
-                "user": bootstrap_user_data(g.user, include_perms=True),
-                "common": common_bootstrap_payload(),
-            }
+                    @expose("/file-handler")
+                    @expose("/file-handler/")
+                    def file_handler(self) -> FlaskResponse:
+                        if not g.user or not get_user_id():
+                            return redirect_to_login()
 
-            return self.render_app_template(extra_bootstrap_data=payload)
+                        payload = {
+                            "user": bootstrap_user_data(g.user, include_perms=True),
+                            "common": common_bootstrap_payload(),
+                        }
 
-    appbuilder.add_view_no_menu(OpspilotView)
+                        return self.render_app_template(extra_bootstrap_data=payload)
+
+                appbuilder.add_view_no_menu(OpspilotView)
+            except Exception as e:
+                import logging
+                logging.getLogger(__name__).warning("Could not register OpspilotView: %s", e)
 
     @app.before_request
     def redirect_root_to_opspilot():
         if request.path == "/":
             return redirect("/opspilot/welcome/")
-
-
 
