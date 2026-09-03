@@ -3,6 +3,7 @@ version: "3.9"
 x-superset-user: &superset-user superset
 x-superset-volumes: &superset-volumes
   - ./docker:/app/docker:ro
+  - ./superset:/app/superset:ro
   - superset_home:/app/superset_home
   - superset_data:/app/data
 
