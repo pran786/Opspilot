@@ -1,0 +1,46 @@
+================================================================================
+                    OPSPILOT - QUICK DEPLOYMENT CHEATSHEET
+================================================================================
+
+PREREQUISITES:
+1. Docker Desktop (Windows/macOS) or Docker Engine + Docker Compose (Linux)
+2. Git
+
+--------------------------------------------------------------------------------
+STEP-BY-STEP COMMANDS TO DEPLOY ON A NEW MACHINE:
+--------------------------------------------------------------------------------
+
+1. CLONE THE REPOSITORY:
+   git clone https://github.com/pran786/eenera-llc-superset.git
+   cd eenera-llc-superset
+   git checkout feature/custom-theme
+
+2. START ALL BACKEND SERVICES (Postgres, Redis, Superset, Nginx):
+   docker compose -f docker-compose-runtime.yml up -d
+
+3. INITIALIZE DATABASE & CREATE ADMIN USER (First time only):
+   docker compose -f docker-compose-runtime.yml exec superset superset db upgrade
+   docker compose -f docker-compose-runtime.yml exec superset superset fab create-admin --username admin --firstname Admin --lastname User --email admin@opspilot.local --password admin
+   docker compose -f docker-compose-runtime.yml exec superset superset init
+
+4. ACCESS THE APPLICATION:
+   - Web App (Nginx Port 80):     http://localhost/opspilot/welcome/
+   - Backend Direct (Port 8088):  http://localhost:8088/opspilot/welcome/
+   - Login Credentials:           admin / admin
+
+--------------------------------------------------------------------------------
+OPTIONAL: LOCAL FRONTEND DEVELOPMENT (HOT-RELOAD):
+--------------------------------------------------------------------------------
+   cd superset-frontend
+   npm install --legacy-peer-deps
+   npm run dev-server
+   - Dev Server URL:              http://localhost:9000/opspilot/welcome/
+
+--------------------------------------------------------------------------------
+HELPFUL MANAGEMENT COMMANDS:
+--------------------------------------------------------------------------------
+   - View Container Status:       docker compose -f docker-compose-runtime.yml ps
+   - View Logs:                   docker compose -f docker-compose-runtime.yml logs -f
+   - Restart Backend:             docker compose -f docker-compose-runtime.yml restart superset
+   - Stop Everything:             docker compose -f docker-compose-runtime.yml down
+================================================================================
