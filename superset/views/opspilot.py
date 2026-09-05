@@ -21,27 +21,27 @@ from flask_appbuilder import expose
 from flask_appbuilder.security.decorators import has_access
 from flask_babel import _
 from superset import db, event_logger, security_manager
+from superset.commands.dashboard.exceptions import DashboardAccessDeniedError
 from superset.commands.dashboard.permalink.get import GetDashboardPermalinkCommand
-from superset.dashboards.permalink.exceptions import (
-    DashboardAccessDeniedError,
-    DashboardPermalinkGetFailedError,
-)
+from superset.dashboards.permalink.exceptions import DashboardPermalinkGetFailedError
 from superset.exceptions import SupersetSecurityException
 from superset.models.dashboard import Dashboard
 from superset.models.user_attributes import UserAttribute
 from superset.superset_typing import FlaskResponse
+from superset.tasks.utils import get_current_user
 from superset.utils.core import (
     get_user_id,
     ReservedUrlParameters,
 )
 from superset.views.base import (
     BaseSupersetView,
-    bootstrap_user_data,
     common_bootstrap_payload,
-    get_current_user,
     json_error_response,
 )
-from superset.views.utils import redirect_to_login
+from superset.views.utils import (
+    bootstrap_user_data,
+    redirect_to_login,
+)
 
 
 class OpspilotView(BaseSupersetView):
