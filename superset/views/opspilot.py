@@ -22,7 +22,6 @@ from flask_appbuilder.security.decorators import has_access
 from flask_babel import _
 from superset import db, event_logger, security_manager
 from superset.commands.dashboard.permalink.get import GetDashboardPermalinkCommand
-from superset.constants import ReservedUrlParameters
 from superset.dashboards.permalink.exceptions import (
     DashboardAccessDeniedError,
     DashboardPermalinkGetFailedError,
@@ -31,7 +30,10 @@ from superset.exceptions import SupersetSecurityException
 from superset.models.dashboard import Dashboard
 from superset.models.user_attributes import UserAttribute
 from superset.superset_typing import FlaskResponse
-from superset.utils.core import get_user_id
+from superset.utils.core import (
+    get_user_id,
+    ReservedUrlParameters,
+)
 from superset.views.base import (
     BaseSupersetView,
     bootstrap_user_data,
