@@ -755,53 +755,12 @@ class Superset(BaseSupersetView):
         dashboard_id_or_slug: str,
         add_extra_log_payload: Callable[..., None] = lambda **kwargs: None,
     ) -> FlaskResponse:
-        """
-        Server side rendering for a dashboard.
-
-        :param dashboard_id_or_slug: identifier for dashboard
-        :param add_extra_log_payload: added by `log_this_with_manual_updates`, set a
-            default value to appease pylint
-        """
-
-        dashboard = Dashboard.get(dashboard_id_or_slug)
-
-        if not dashboard:
-            if not get_current_user():
-                return redirect_to_login()
-            abort(404)
-
-        # Redirect anonymous users to login for unpublished dashboards,
-        # in the edge case where a dataset has been shared with public
-        if not get_current_user() and not dashboard.published:
-            return redirect_to_login()
-
-        try:
-            dashboard.raise_for_access()
-        except SupersetSecurityException:
-            if not get_current_user():
-                return redirect_to_login()
-            abort(404)
-        add_extra_log_payload(
-            dashboard_id=dashboard.id,
-            dashboard_version="v2",
-            dash_edit_perm=(
-                security_manager.is_owner(dashboard)
-                and security_manager.can_access("can_write", "Dashboard")
-            ),
-            edit_mode=(
-                request.args.get(ReservedUrlParameters.EDIT_MODE.value) == "true"
-            ),
-        )
-
-        bootstrap_payload = {
-            "user": bootstrap_user_data(g.user, include_perms=True),
-            "common": common_bootstrap_payload(),
-        }
-        return self.render_app_template(
-            extra_bootstrap_data=bootstrap_payload,
-            title=dashboard.dashboard_title,  # dashboard title is always visible
-            standalone_mode=ReservedUrlParameters.is_standalone_mode(),
-        )
+        """Redirect legacy dashboard URL to opspilot dashboard"""
+        query_string = request.query_string.decode("utf-8")
+        target = f"/opspilot/dashboard/{dashboard_id_or_slug}/"
+        if query_string:
+            target = f"{target}?{query_string}"
+        return redirect(target)
 
     @has_access
     @expose("/dashboard/p/<key>/", methods=("GET",))
@@ -809,29 +768,11 @@ class Superset(BaseSupersetView):
         self,
         key: str,
     ) -> FlaskResponse:
-        try:
-            value = GetDashboardPermalinkCommand(key).run()
-        except (DashboardPermalinkGetFailedError, DashboardAccessDeniedError) as ex:
-            return json_error_response(__("Error: %(msg)s", msg=ex.message), status=404)
-        if not value:
-            return json_error_response(_("permalink state not found"), status=404)
-
-        dashboard_id, state = value["dashboardId"], value.get("state", {})
-        url = url_for(
-            "Superset.dashboard", dashboard_id_or_slug=dashboard_id, permalink_key=key
-        )
-        if url_params := state.get("urlParams"):
-            for param_key, param_val in url_params:
-                if param_key == "native_filters":
-                    # native_filters doesnt need to be encoded here
-                    url = f"{url}&native_filters={param_val}"
-                else:
-                    params = parse.urlencode([(param_key, param_val)])
-                    url = f"{url}&{params}"
-        if original_params := request.query_string.decode():
-            url = f"{url}&{original_params}"
-        if hash_ := state.get("anchor", state.get("hash")):
-            url = f"{url}#{hash_}"
+        query_string = request.query_string.decode("utf-8")
+        target = f"/opspilot/dashboard/p/{key}/"
+        if query_string:
+            target = f"{target}?{query_string}"
+        return redirect(target)
 
         return redirect(url)
 
@@ -890,37 +831,22 @@ class Superset(BaseSupersetView):
     @expose("/welcome/")
     def welcome(self) -> FlaskResponse:
         """Personalized welcome page"""
-        if not g.user or not get_user_id():
-            return redirect_to_login()
-
-        if welcome_dashboard_id := (
-            db.session.query(UserAttribute.welcome_dashboard_id)
-            .filter_by(user_id=get_user_id())
-            .scalar()
-        ):
-            return self.dashboard(dashboard_id_or_slug=str(welcome_dashboard_id))
-
-        payload = {
-            "user": bootstrap_user_data(g.user, include_perms=True),
-            "common": common_bootstrap_payload(),
-        }
-
-        return self.render_app_template(extra_bootstrap_data=payload)
+        query_string = request.query_string.decode("utf-8")
+        target = "/opspilot/welcome/"
+        if query_string:
+            target = f"{target}?{query_string}"
+        return redirect(target)
 
     @has_access
     @event_logger.log_this
     @expose("/file-handler")
     def file_handler(self) -> FlaskResponse:
         """File handler page for PWA file handling"""
-        if not g.user or not get_user_id():
-            return redirect_to_login()
-
-        payload = {
-            "user": bootstrap_user_data(g.user, include_perms=True),
-            "common": common_bootstrap_payload(),
-        }
-
-        return self.render_app_template(extra_bootstrap_data=payload)
+        query_string = request.query_string.decode("utf-8")
+        target = "/opspilot/file-handler"
+        if query_string:
+            target = f"{target}?{query_string}"
+        return redirect(target)
 
     @has_access
     @event_logger.log_this

@@ -708,7 +708,7 @@ function DatabaseList({
                           avatar={<span>•</span>}
                           title={
                             <Typography.Link
-                              href={`/superset/dashboard/${result.id}`}
+                              href={`/opspilot/dashboard/${result.id}`}
                               target="_atRiskItem"
                             >
                               {result.title}

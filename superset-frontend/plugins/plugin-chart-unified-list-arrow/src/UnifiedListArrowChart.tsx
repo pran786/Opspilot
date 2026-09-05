@@ -16,18 +16,22 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-export default function UnifiedListArrowChart(props: UnifiedListBarChartProps) {
-    const { data, height, width, customize } = props;
+import { UnifiedListBarChartProps } from './types';
+import { Styles } from './styles';
+import { Row } from './components/Row';
 
-    return (
-        <Styles height={height} width={width}>
-            {data.map((record, index) => (
-                <Row
-                    key={index}
-                    record={record}
-                    customize={customize}
-                />
-            ))}
-        </Styles>
-    );
+export default function UnifiedListArrowChart(props: UnifiedListBarChartProps) {
+  const { data, height, width, customize } = props;
+
+  return (
+    <Styles height={height} width={width}>
+      {data.map((record, index) => (
+        <Row
+          key={index}
+          record={record}
+          customize={customize}
+        />
+      ))}
+    </Styles>
+  );
 }

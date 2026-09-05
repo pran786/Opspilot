@@ -247,7 +247,7 @@ class BaseReportState:
             dashboard.uuid if dashboard and dashboard.uuid else dashboard.id
         )
         return get_url_path(
-            "Superset.dashboard",
+            "OpspilotView.dashboard",
             user_friendly=user_friendly,
             dashboard_id_or_slug=dashboard_id_or_slug,
             force=force,
@@ -297,7 +297,7 @@ class BaseReportState:
 
         return [
             get_url_path(
-                "Superset.dashboard",
+                "OpspilotView.dashboard",
                 user_friendly=user_friendly,
                 dashboard_id_or_slug=dashboard_id_or_slug,
                 force=force,
@@ -317,7 +317,7 @@ class BaseReportState:
         ).run()
 
         return get_url_path(
-            "Superset.dashboard_permalink",
+            "OpspilotView.dashboard_permalink",
             key=permalink_key,
             user_friendly=user_friendly,
         )

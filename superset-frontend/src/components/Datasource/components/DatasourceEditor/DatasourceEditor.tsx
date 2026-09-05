@@ -1487,7 +1487,7 @@ class DatasourceEditor extends PureComponent<
                 'Default URL to redirect to when accessing from the dataset list page. Accepts relative URLs such as',
               )}{' '}
               <Typography.Text code>
-                /superset/dashboard/{'{id}'}/
+                /opspilot/dashboard/{'{id}'}/
               </Typography.Text>
             </>
           }
