@@ -303,6 +303,10 @@ export const routes: Routes = [
     Component: Chart,
   },
   {
+    path: '/opspilot/explore/p',
+    Component: Chart,
+  },
+  {
     path: '/superset/explore/p',
     Component: Chart,
   },
@@ -338,6 +342,14 @@ export const routes: Routes = [
 ];
 
 if (isFeatureEnabled(FeatureFlag.TaggingSystem)) {
+  routes.push({
+    path: '/opspilot/all_entities/',
+    Component: AllEntities,
+  });
+  routes.push({
+    path: '/opspilot/tags/',
+    Component: Tags,
+  });
   routes.push({
     path: '/superset/all_entities/',
     Component: AllEntities,

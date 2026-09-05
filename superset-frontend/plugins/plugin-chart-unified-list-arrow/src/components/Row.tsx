@@ -199,3 +199,5 @@ export const Row: React.FC<RowProps> = ({ record, customize }) => {
         </RowContainer>
     );
 };
+
+export default Row;

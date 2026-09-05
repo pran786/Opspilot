@@ -88,7 +88,7 @@ def cache_dashboard_thumbnail(
         return
 
     dashboard = Dashboard.get(dashboard_id)
-    url = get_url_path("Superset.dashboard", dashboard_id_or_slug=dashboard.id)
+    url = get_url_path("OpspilotView.dashboard", dashboard_id_or_slug=dashboard.id)
 
     logger.info("Caching dashboard: %s", url)
     _, username = get_executor(
