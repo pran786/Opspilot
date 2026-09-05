@@ -167,9 +167,52 @@ const AntIconRenderer: React.FC<{
     );
 };
 
+// ─── Chart Error Boundary ──────────────────────────────────────────
+class ChartErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // eslint-disable-next-line no-console
+    console.error('KpiDualColumnCardChart render error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            padding: 16,
+            color: '#e74c3c',
+            fontSize: 13,
+            border: '1px dashed #e74c3c',
+            borderRadius: 4,
+            background: '#fff5f5',
+          }}
+        >
+          <strong>Chart Display Warning</strong>
+          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#666' }}>
+            {this.state.error?.message || 'Unable to render chart data.'}
+          </p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // ─── Main chart component ──────────────────────────────────────────
-export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
-    const { data, height, width, customize } = props;
+function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
+    const { data = [], height = 400, width = 600, customize = {} as any } = props || {};
     const {
         keyColumn,
         valueColumn,
@@ -197,7 +240,7 @@ export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
         containerPadding,
         containerBgColor,
         enableShadow,
-    } = customize;
+    } = customize || {};
 
     // ── Measure uniform value‑box width ────────────────────────────
     const measureRef = useRef<HTMLDivElement>(null);
@@ -206,8 +249,9 @@ export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
     // Check if any row has a box color
     const hasAnyBox = useMemo(
         () =>
+            Array.isArray(data) &&
             data.some(
-                (r) => valBoxColorColumn && !!r[valBoxColorColumn],
+                (r) => valBoxColorColumn && !!r?.[valBoxColorColumn],
             ),
         [data, valBoxColorColumn],
     );
@@ -357,4 +401,12 @@ export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
             })}
         </CardContainer>
     );
+}
+
+export default function KpiDualColumnCardChart(props: KpiDualColumnCardProps) {
+  return (
+    <ChartErrorBoundary>
+      <KpiDualColumnCardChartContent {...props} />
+    </ChartErrorBoundary>
+  );
 }

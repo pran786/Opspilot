@@ -68,8 +68,8 @@ export const Row: React.FC<RowProps> = ({ record, customize }) => {
         keyColor,
         keySubFontSize,
         secondaryFontSize,
-        displayValueFontSize, // End column font size
-    } = customize;
+        displayValueFontSize,
+    } = customize || {};
 
     // Helper to extract value safely even if casing mismatches or key is missing
     const getValue = (columnName?: string) => {

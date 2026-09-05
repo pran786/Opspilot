@@ -84,7 +84,7 @@ export default function transformProps(chartProps: ChartProps): KpiDualColumnCar
     const containerBgColor = String(getProp('container_bg_color', 'containerBgColor', 'transparent') || 'transparent');
     const enableShadow = !!getProp('enable_shadow', 'enableShadow', false);
 
-    const data = queriesData[0].data as TimeseriesDataRecord[];
+    const data = (queriesData?.[0]?.data || []) as TimeseriesDataRecord[];
 
     const customize: KpiDualColumnCardCustomizeProps = {
         keyColumn,

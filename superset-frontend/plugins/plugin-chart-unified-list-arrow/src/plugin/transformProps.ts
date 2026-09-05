@@ -67,7 +67,7 @@ export default function transformProps(chartProps: ChartProps): UnifiedListBarCh
     const secondary_font_size = getProp('secondary_font_size', 'secondaryFontSize', 12);
     const display_value_font_size = getProp('display_value_font_size', 'displayValueFontSize', 24);
 
-    const data = queriesData[0].data as TimeseriesDataRecord[];
+    const data = (queriesData?.[0]?.data || []) as TimeseriesDataRecord[];
 
     // DEBUG: Log to verify values
     console.log('=== TRANSFORM PROPS DEBUG ===');
