@@ -78,7 +78,7 @@ export const Row: React.FC<RowProps> = ({ record, customize, maxMetricValue }) =
         secondaryFontSize,
         displayValueFontSize,
         barColorPositive,
-    } = customize;
+    } = customize || {};
 
     let effectiveKeyColumn = keyColumn;
 

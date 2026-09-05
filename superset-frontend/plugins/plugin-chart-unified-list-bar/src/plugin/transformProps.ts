@@ -71,7 +71,7 @@ export default function transformProps(chartProps: ChartProps): UnifiedListBarCh
         iconRules,
     } = formData;
 
-    const data = queriesData[0].data as TimeseriesDataRecord[];
+    const data = (queriesData?.[0]?.data || []) as TimeseriesDataRecord[];
 
     // DEBUG: Log to verify values
     console.log('=== TRANSFORM PROPS DEBUG ===');

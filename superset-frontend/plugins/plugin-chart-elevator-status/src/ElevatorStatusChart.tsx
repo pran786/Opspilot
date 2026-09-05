@@ -53,24 +53,68 @@ const PayloadText = styled.div`
   color: #4b5563;
 `;
 
-export const ElevatorStatusChart: React.FC<ElevatorStatusProps> = ({
-  width,
-  height,
-  data,
-  customize,
+// ─── Chart Error Boundary ──────────────────────────────────────────
+class ChartErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // eslint-disable-next-line no-console
+    console.error('ElevatorStatusChart render error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            padding: 16,
+            color: '#e74c3c',
+            fontSize: 13,
+            border: '1px dashed #e74c3c',
+            borderRadius: 4,
+            background: '#fff5f5',
+          }}
+        >
+          <strong>Chart Display Warning</strong>
+          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#666' }}>
+            {this.state.error?.message || 'Unable to render elevator status.'}
+          </p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const ElevatorStatusChartContent: React.FC<ElevatorStatusProps> = ({
+  width = 400,
+  height = 400,
+  data = [],
+  customize = {} as any,
 }) => {
-  const currentRecord: Record<string, any> = data && data.length > 0 ? data[0] : {};
-  const direction = customize.directionColumn ? String(currentRecord[customize.directionColumn] || 'down') : 'down';
-  const floor = customize.floorColumn ? String(currentRecord[customize.floorColumn] || '') : '';
-  const payload = customize.payloadColumn ? String(currentRecord[customize.payloadColumn] || '') : '';
-  const status = customize.statusColumn ? String(currentRecord[customize.statusColumn] || '') : '';
+  const c = customize || ({} as any);
+  const currentRecord: Record<string, any> = data && Array.isArray(data) && data.length > 0 ? data[0] : {};
+  const direction = c.directionColumn && currentRecord[c.directionColumn] ? String(currentRecord[c.directionColumn] || 'down') : 'down';
+  const floor = c.floorColumn && currentRecord[c.floorColumn] ? String(currentRecord[c.floorColumn] || '') : '';
+  const payload = c.payloadColumn && currentRecord[c.payloadColumn] ? String(currentRecord[c.payloadColumn] || '') : '';
+  const status = c.statusColumn && currentRecord[c.statusColumn] ? String(currentRecord[c.statusColumn] || '') : '';
 
   return (
     <Container width={width} height={height}>
       <ElevatorGraphic
-        doorColor={customize.doorColor}
-        frameColor={customize.frameColor}
-        arrowColor={customize.arrowColor}
+        doorColor={c.doorColor}
+        frameColor={c.frameColor}
+        arrowColor={c.arrowColor}
         direction={direction}
         floor={floor}
         status={status}
@@ -85,4 +129,13 @@ export const ElevatorStatusChart: React.FC<ElevatorStatusProps> = ({
   );
 };
 
+export const ElevatorStatusChart: React.FC<ElevatorStatusProps> = (props) => {
+  return (
+    <ChartErrorBoundary>
+      <ElevatorStatusChartContent {...props} />
+    </ChartErrorBoundary>
+  );
+};
+
 export default ElevatorStatusChart;
+

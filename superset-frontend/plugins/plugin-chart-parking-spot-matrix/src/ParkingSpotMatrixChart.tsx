@@ -46,24 +46,71 @@ const EmptyContainer = styled.div`
   font-size: 14px;
 `;
 
-export const ParkingSpotMatrixChart: React.FC<ParkingSpotMatrixProps> = ({
-  width,
-  height,
-  data,
-  customize,
+// ─── Chart Error Boundary ──────────────────────────────────────────
+class ChartErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // eslint-disable-next-line no-console
+    console.error('ParkingSpotMatrixChart render error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            padding: 16,
+            color: '#e74c3c',
+            fontSize: 13,
+            border: '1px dashed #e74c3c',
+            borderRadius: 4,
+            background: '#fff5f5',
+          }}
+        >
+          <strong>Chart Display Warning</strong>
+          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#666' }}>
+            {this.state.error?.message || 'Unable to render parking spot matrix.'}
+          </p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const ParkingSpotMatrixChartContent: React.FC<ParkingSpotMatrixProps> = ({
+  width = 400,
+  height = 400,
+  data = [],
+  customize = {} as any,
 }) => {
-  if (!data || data.length === 0) {
+  if (!data || !Array.isArray(data) || data.length === 0) {
     return <EmptyContainer>No Parking Spot Data Available</EmptyContainer>;
   }
 
+  const columnsCount = Number(customize?.columnsCount) || 3;
+  const cardGap = Number(customize?.cardGap) || 8;
+  const spotIdCol = customize?.spotIdColumn || '';
+
   return (
     <MatrixWrapper width={width} height={height}>
-      <Grid columns={customize.columnsCount} gap={customize.cardGap}>
+      <Grid columns={columnsCount} gap={cardGap}>
         {data.map((record, index) => (
           <ParkingSpotCard
-            key={String(record[customize.spotIdColumn] || index)}
+            key={String((spotIdCol && record?.[spotIdCol]) || index)}
             record={record}
-            customize={customize}
+            customize={customize || {}}
           />
         ))}
       </Grid>
@@ -71,4 +118,13 @@ export const ParkingSpotMatrixChart: React.FC<ParkingSpotMatrixProps> = ({
   );
 };
 
+export const ParkingSpotMatrixChart: React.FC<ParkingSpotMatrixProps> = (props) => {
+  return (
+    <ChartErrorBoundary>
+      <ParkingSpotMatrixChartContent {...props} />
+    </ChartErrorBoundary>
+  );
+};
+
 export default ParkingSpotMatrixChart;
+

@@ -130,42 +130,90 @@ const EmptyState = styled.div`
   font-style: italic;
 `;
 
-export const BulkLoadingCardChart: React.FC<BulkLoadingCardProps> = ({
-  width,
-  height,
-  data,
-  customize,
+// ─── Chart Error Boundary ──────────────────────────────────────────
+class ChartErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // eslint-disable-next-line no-console
+    console.error('BulkLoadingCardChart render error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            padding: 16,
+            color: '#e74c3c',
+            fontSize: 13,
+            border: '1px dashed #e74c3c',
+            borderRadius: 4,
+            background: '#fff5f5',
+          }}
+        >
+          <strong>Chart Display Warning</strong>
+          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#666' }}>
+            {this.state.error?.message || 'Unable to render bulk loading card.'}
+          </p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
+  width = 400,
+  height = 400,
+  data = [],
+  customize = {} as any,
 }) => {
-  if (!data || data.length === 0) {
+  const c = customize || ({} as any);
+  const cardBgColor = c.cardBgColor || '#FFFFFF';
+  const cardBorderColor = c.cardBorderColor || '#E5E7EB';
+  const titleText = c.titleText || 'Bulk Loading';
+
+  if (!data || !Array.isArray(data) || data.length === 0) {
     return (
-      <Container width={width} height={height} bg={customize.cardBgColor} border={customize.cardBorderColor}>
-        <SectionTitle>{customize.titleText}</SectionTitle>
+      <Container width={width} height={height} bg={cardBgColor} border={cardBorderColor}>
+        <SectionTitle>{titleText}</SectionTitle>
         <EmptyState>No Active Bulk Loading Operations</EmptyState>
       </Container>
     );
   }
 
   return (
-    <Container width={width} height={height} bg={customize.cardBgColor} border={customize.cardBorderColor}>
-      <SectionTitle>{customize.titleText}</SectionTitle>
+    <Container width={width} height={height} bg={cardBgColor} border={cardBorderColor}>
+      <SectionTitle>{titleText}</SectionTitle>
       {data.map((record, index) => {
-        const workOrder = record[customize.workOrderColumn] || `WO-${index + 1}`;
-        const materialName = customize.materialNameColumn ? record[customize.materialNameColumn] : '';
-        const currentStatus = customize.statusColumn ? String(record[customize.statusColumn]).toUpperCase() : 'LOADING';
-        const destinationTank = customize.destinationTankColumn ? record[customize.destinationTankColumn] : 'BK-1';
-        const elapsedTime = customize.elapsedTimeColumn ? record[customize.elapsedTimeColumn] : null;
+        const workOrder = (c.workOrderColumn && record?.[c.workOrderColumn]) || `WO-${index + 1}`;
+        const materialName = c.materialNameColumn ? record?.[c.materialNameColumn] : '';
+        const currentStatus = c.statusColumn && record?.[c.statusColumn] ? String(record[c.statusColumn]).toUpperCase() : 'LOADING';
+        const destinationTank = c.destinationTankColumn && record?.[c.destinationTankColumn] ? record[c.destinationTankColumn] : 'BK-1';
+        const elapsedTime = c.elapsedTimeColumn && record?.[c.elapsedTimeColumn] ? record[c.elapsedTimeColumn] : null;
 
         return (
           <LoadingRow key={String(workOrder) + index}>
             <MaterialInfo>
-              <WorkOrderId fontSize={customize.workOrderFontSize}>{workOrder}</WorkOrderId>
+              <WorkOrderId fontSize={c.workOrderFontSize || 22}>{workOrder}</WorkOrderId>
               {materialName && <MaterialName>{materialName}</MaterialName>}
             </MaterialInfo>
 
             <FlowCenter>
-              {customize.showTruckGraphic && index === 0 && <TankerTruckSvg width={120} height={50} />}
+              {c.showTruckGraphic && index === 0 && <TankerTruckSvg width={120} height={50} />}
 
-              {customize.showStatusPipeline && (
+              {c.showStatusPipeline && (
                 <StatusPipeline>
                   <ChevronBadge bg="#F59E0B" active={currentStatus.includes('LOAD')}>
                     LOADING
@@ -184,8 +232,8 @@ export const BulkLoadingCardChart: React.FC<BulkLoadingCardProps> = ({
             </FlowCenter>
 
             <DestinationBlock>
-              <TankBadge color={customize.tankBadgeColor}>{destinationTank}</TankBadge>
-              {elapsedTime && <TimerText color={customize.timerColor}>{elapsedTime}</TimerText>}
+              <TankBadge color={c.tankBadgeColor || '#111827'}>{destinationTank}</TankBadge>
+              {elapsedTime && <TimerText color={c.timerColor || '#111827'}>{elapsedTime}</TimerText>}
             </DestinationBlock>
           </LoadingRow>
         );
@@ -194,4 +242,13 @@ export const BulkLoadingCardChart: React.FC<BulkLoadingCardProps> = ({
   );
 };
 
+export const BulkLoadingCardChart: React.FC<BulkLoadingCardProps> = (props) => {
+  return (
+    <ChartErrorBoundary>
+      <BulkLoadingCardChartContent {...props} />
+    </ChartErrorBoundary>
+  );
+};
+
 export default BulkLoadingCardChart;
+

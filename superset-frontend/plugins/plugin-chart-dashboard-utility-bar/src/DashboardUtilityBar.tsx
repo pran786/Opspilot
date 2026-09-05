@@ -48,8 +48,51 @@ import OverlayPortal from './components/OverlayPortal';
  * Date appears on top, time below (stacked vertically).
  * Weather icon + temp sits to the left of the date/time block.
  */
-export default function DashboardUtilityBar(props: DashboardUtilityBarProps) {
-    const { data, customize } = props;
+// ─── Chart Error Boundary ──────────────────────────────────────────
+class ChartErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // eslint-disable-next-line no-console
+    console.error('DashboardUtilityBar render error:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            padding: 16,
+            color: '#e74c3c',
+            fontSize: 13,
+            border: '1px dashed #e74c3c',
+            borderRadius: 4,
+            background: '#fff5f5',
+          }}
+        >
+          <strong>Utility Bar Display Warning</strong>
+          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#666' }}>
+            {this.state.error?.message || 'Unable to render utility bar.'}
+          </p>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+function DashboardUtilityBarContent(props: DashboardUtilityBarProps) {
+    const { data = [], customize = {} as any } = props || {};
 
     const {
         layoutMode,
@@ -81,7 +124,7 @@ export default function DashboardUtilityBar(props: DashboardUtilityBarProps) {
         weatherIconSize,
         temperatureFontSize,
         showTemperature,
-    } = customize;
+    } = customize || {};
 
     // ─── Auto-hide state ──────────────────────────────────────────────
     const [visible, setVisible] = useState(true);
@@ -127,7 +170,7 @@ export default function DashboardUtilityBar(props: DashboardUtilityBarProps) {
 
     const kpiValues = useMemo(
         () =>
-            kpiColumns.map((col) => ({
+            (Array.isArray(kpiColumns) ? kpiColumns : []).map((col: string) => ({
                 label: col,
                 value: firstRow[col] != null ? String(firstRow[col]) : '—',
             })),
@@ -177,7 +220,7 @@ export default function DashboardUtilityBar(props: DashboardUtilityBarProps) {
     if (showKpi && kpiValues.length > 0) {
         leftElements.push(
             <KpiContainer key="kpi-container">
-                {kpiValues.map((kpi) => (
+                {kpiValues.map((kpi: { label: string; value: string }) => (
                     <KpiItem key={`kpi-${kpi.label}`}>
                         <KpiLabel>{kpi.label}</KpiLabel>
                         <KpiValue>{kpi.value}</KpiValue>
@@ -265,4 +308,12 @@ export default function DashboardUtilityBar(props: DashboardUtilityBarProps) {
             {allContent}
         </BarContainer>
     );
+}
+
+export default function DashboardUtilityBar(props: DashboardUtilityBarProps) {
+  return (
+    <ChartErrorBoundary>
+      <DashboardUtilityBarContent {...props} />
+    </ChartErrorBoundary>
+  );
 }

@@ -148,35 +148,36 @@ const EmptySpot = styled.div`
 `;
 
 export const ParkingSpotCard: React.FC<ParkingSpotCardProps> = ({ record, customize }) => {
-  const spotId = record[customize.spotIdColumn] || 'Bay';
-  const workOrder = customize.workOrderColumn ? record[customize.workOrderColumn] : null;
-  const isPriority = customize.priorityColumn
-    ? Boolean(record[customize.priorityColumn]) &&
-      String(record[customize.priorityColumn]).toLowerCase() !== 'false' &&
-      String(record[customize.priorityColumn]).toLowerCase() !== '0'
+  const c = customize || ({} as any);
+  const spotId = (c.spotIdColumn && record?.[c.spotIdColumn]) || 'Bay';
+  const workOrder = c.workOrderColumn ? record?.[c.workOrderColumn] : null;
+  const isPriority = c.priorityColumn
+    ? Boolean(record?.[c.priorityColumn]) &&
+      String(record[c.priorityColumn]).toLowerCase() !== 'false' &&
+      String(record[c.priorityColumn]).toLowerCase() !== '0'
     : false;
-  const dueDate = customize.dueDateColumn ? record[customize.dueDateColumn] : null;
-  const stageTag = customize.stageTagColumn ? record[customize.stageTagColumn] : null;
-  const stageColor = customize.stageColorColumn && record[customize.stageColorColumn]
-    ? record[customize.stageColorColumn]
-    : customize.stageBadgeBgColor;
+  const dueDate = c.dueDateColumn ? record?.[c.dueDateColumn] : null;
+  const stageTag = c.stageTagColumn ? record?.[c.stageTagColumn] : null;
+  const stageColor = c.stageColorColumn && record?.[c.stageColorColumn]
+    ? record[c.stageColorColumn]
+    : c.stageBadgeBgColor || '#4B5563';
 
-  const binC1 = customize.binC1Column ? record[customize.binC1Column] : null;
-  const binC2 = customize.binC2Column ? record[customize.binC2Column] : null;
-  const binC3 = customize.binC3Column ? record[customize.binC3Column] : null;
-  const binBC = customize.binBCColumn ? record[customize.binBCColumn] : null;
+  const binC1 = c.binC1Column ? record?.[c.binC1Column] : null;
+  const binC2 = c.binC2Column ? record?.[c.binC2Column] : null;
+  const binC3 = c.binC3Column ? record?.[c.binC3Column] : null;
+  const binBC = c.binBCColumn ? record?.[c.binBCColumn] : null;
   const hasBins = binC1 !== null || binC2 !== null || binC3 !== null || binBC !== null;
 
   return (
     <CardContainer
-      bgColor={customize.cardBgColor}
-      borderColor={customize.cardBorderColor}
-      fontSize={customize.fontSize}
+      bgColor={c.cardBgColor || '#FFFFFF'}
+      borderColor={c.cardBorderColor || '#E5E7EB'}
+      fontSize={c.fontSize || 14}
     >
-      <HeaderBar bg={customize.headerBgColor} color={customize.headerTextColor}>
+      <HeaderBar bg={c.headerBgColor || '#1F2937'} color={c.headerTextColor || '#FFFFFF'}>
         <span>{spotId}</span>
         {isPriority && (
-          <PriorityBadge bg={customize.priorityBadgeBgColor} color={customize.priorityBadgeTextColor}>
+          <PriorityBadge bg={c.priorityBadgeBgColor || '#EF4444'} color={c.priorityBadgeTextColor || '#FFFFFF'}>
             Priority
           </PriorityBadge>
         )}
@@ -191,17 +192,17 @@ export const ParkingSpotCard: React.FC<ParkingSpotCardProps> = ({ record, custom
             </OrderRow>
 
             {stageTag && (
-              <StageBadge bg={stageColor} color={customize.stageBadgeTextColor}>
+              <StageBadge bg={stageColor} color={c.stageBadgeTextColor || '#FFFFFF'}>
                 {stageTag}
               </StageBadge>
             )}
           </>
         ) : (
-          <EmptySpot>{customize.emptySpotText}</EmptySpot>
+          <EmptySpot>{c.emptySpotText || 'Available'}</EmptySpot>
         )}
       </BodySection>
 
-      {customize.showBinGrid && hasBins && (
+      {c.showBinGrid && hasBins && (
         <BinTable>
           <thead>
             <tr>

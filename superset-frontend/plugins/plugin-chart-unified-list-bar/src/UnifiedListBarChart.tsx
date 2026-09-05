@@ -16,53 +16,100 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+import React from 'react';
 import { UnifiedListBarChartProps } from './types';
 import { Styles } from './styles';
 import { Row } from './components/Row';
 
-export default function UnifiedListBarChart(props: UnifiedListBarChartProps) {
-    const { data, height, width, customize } = props;
-    const { metricColumn, maxMetricColumn } = customize;
+class ChartErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; error: Error | null }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
 
-    console.log('UnifiedListBarChart render props:', props);
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
 
-    // Calculate Max Metric for Bars if not provided via column
-    let maxMetricValue = 0;
-    if (maxMetricColumn) {
-        // If a column is specified, we might take the max of that column across the dataset
-        // or assume it's per-row. Re-reading reqs: "max_metric_column -> optional".
-        // Usually "max" implies the denominator for the percentage calculation.
-        // If provided, we likely want the max *value* in that column, or maybe it is the max target per row?
-        // "percent = value / max_value" implies row-level max if it varies, or global max.
-        // Let's assume global max of the max_metric_column for now, or fall back to max of metric_column.
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    // eslint-disable-next-line no-console
+    console.error('UnifiedListBarChart render error:', error, errorInfo);
+  }
 
-        // Actually, if it's "max_metric: 20" in the example, it looks like a row-level target.
-        // But for calculating bar width relative to each other, we usually want a global scale.
-        // However, the example "16 / 20" suggests row-level target.
-        // Let's handle both: if maxMetricColumn exists, use that record's value as denominator.
-        // If NOT, find the global max of metricColumn.
-    } else if (metricColumn) {
-        maxMetricValue = Math.max(...data.map(d => (d[metricColumn] as number) || 0));
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div
+          style={{
+            padding: 16,
+            color: '#e74c3c',
+            fontSize: 13,
+            border: '1px dashed #e74c3c',
+            borderRadius: 4,
+            background: '#fff5f5',
+          }}
+        >
+          <strong>Chart Display Warning</strong>
+          <p style={{ margin: '4px 0 0', fontSize: 12, color: '#666' }}>
+            {this.state.error?.message || 'Unable to render chart data.'}
+          </p>
+        </div>
+      );
     }
+    return this.props.children;
+  }
+}
 
+function UnifiedListBarChartContent(props: UnifiedListBarChartProps) {
+  const { data = [], height = 400, width = 600, customize = {} as any } = props || {};
+  const { metricColumn, maxMetricColumn } = customize || {};
+
+  if (!data || !Array.isArray(data) || data.length === 0) {
     return (
-        <Styles height={height} width={width}>
-            {data.map((record, index) => {
-                // Determine row-specific max
-                let rowMax = maxMetricValue;
-                if (maxMetricColumn) {
-                    rowMax = (record[maxMetricColumn] as number) || 0;
-                }
-
-                return (
-                    <Row
-                        key={index}
-                        record={record}
-                        customize={customize}
-                        maxMetricValue={rowMax}
-                    />
-                );
-            })}
-        </Styles>
+      <Styles height={height} width={width}>
+        <div style={{ padding: 16, color: '#888', textAlign: 'center' }}>
+          No data available
+        </div>
+      </Styles>
     );
+  }
+
+  // Calculate Max Metric for Bars if not provided via column
+  let maxMetricValue = 0;
+  if (metricColumn && Array.isArray(data) && data.length > 0) {
+    const vals = data.map(d => Number(d[metricColumn]) || 0);
+    maxMetricValue = vals.length > 0 ? Math.max(...vals) : 0;
+  }
+
+  return (
+    <Styles height={height} width={width}>
+      {data.map((record, index) => {
+        // Determine row-specific max
+        let rowMax = maxMetricValue;
+        if (maxMetricColumn && record) {
+          rowMax = (record[maxMetricColumn] as number) || 0;
+        }
+
+        return (
+          <Row
+            key={index}
+            record={record}
+            customize={customize}
+            maxMetricValue={rowMax}
+          />
+        );
+      })}
+    </Styles>
+  );
+}
+
+export default function UnifiedListBarChart(props: UnifiedListBarChartProps) {
+  return (
+    <ChartErrorBoundary>
+      <UnifiedListBarChartContent {...props} />
+    </ChartErrorBoundary>
+  );
 }
