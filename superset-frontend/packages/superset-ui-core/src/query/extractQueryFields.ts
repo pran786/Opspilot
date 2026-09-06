@@ -118,7 +118,7 @@ export default function extractQueryFields(
               try {
                 return JSON.parse(item);
               } catch (error) {
-                throw new Error(t('Found invalid orderby options'));
+                return [item, true];
               }
             }
             return item;

@@ -31,12 +31,15 @@ export default function buildQuery(formData: QueryFormData) {
     }
   };
 
-  addCol(formData.work_order_column);
-  addCol(formData.material_name_column);
-  addCol(formData.secondary_id_column);
-  addCol(formData.status_column);
-  addCol(formData.destination_tank_column);
-  addCol(formData.elapsed_time_column);
+  const getCol = (snake: string, camel: string) =>
+    formData[snake] || (formData as any)[camel];
+
+  addCol(getCol('work_order_column', 'workOrderColumn'));
+  addCol(getCol('material_name_column', 'materialNameColumn'));
+  addCol(getCol('secondary_id_column', 'secondaryIdColumn'));
+  addCol(getCol('status_column', 'statusColumn'));
+  addCol(getCol('destination_tank_column', 'destinationTankColumn'));
+  addCol(getCol('elapsed_time_column', 'elapsedTimeColumn'));
 
   if (Array.isArray(formData.groupby)) {
     formData.groupby.forEach((col: QueryFormColumn) => addCol(col));

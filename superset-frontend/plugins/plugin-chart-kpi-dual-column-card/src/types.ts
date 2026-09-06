@@ -20,60 +20,71 @@ import { QueryFormData, TimeseriesDataRecord } from '@superset-ui/core';
 
 // ── Header / Icon enums ────────────────────────────────────────────
 export type HeaderMode = 'none' | 'icon_above_value' | 'icon_centered';
-export type IconType = 'none' | 'antd' | 'svg_url' | 'upload';
+export type IconType =
+  | 'none'
+  | 'antd'
+  | 'svg_url'
+  | 'upload'
+  | 'hardhat'
+  | 'forklift'
+  | 'blower';
 export type TextTransform = 'none' | 'uppercase' | 'capitalize';
 export type Alignment = 'left' | 'center' | 'right';
 
 // ── Customize props (control‑panel‑driven) ─────────────────────────
 export interface KpiDualColumnCardCustomizeProps {
-    // Data columns
-    keyColumn: string;
-    valueColumn: string;
-    valBoxColorColumn?: string;
-    valTextColorColumn?: string;
+  // Data columns
+  keyColumn: string;
+  valueColumn: string;
+  valBoxColorColumn?: string;
+  valTextColorColumn?: string;
+  groupColumn?: string;
 
-    // Header / Icon
-    headerMode: HeaderMode;
-    iconType: IconType;
-    iconName: string;
-    svgUrl: string;
-    uploadedIcon: string;
-    iconSize: number;
-    iconColor: string;
-    iconSpacing: number;
+  // Header / Icon
+  headerMode: HeaderMode;
+  iconType: IconType;
+  iconName: string;
+  titleText?: string;
+  titleFontSize?: number;
+  titleColor?: string;
+  svgUrl: string;
+  uploadedIcon: string;
+  iconSize: number;
+  iconColor: string;
+  iconSpacing: number;
 
-    // Typography
-    keyFontSize: number;
-    valueFontSize: number;
-    keyFontWeight: number;
-    valueFontWeight: number;
-    globalKeyColor: string;
-    globalValueColor: string;
-    textTransform: TextTransform;
+  // Typography
+  keyFontSize: number;
+  valueFontSize: number;
+  keyFontWeight: number;
+  valueFontWeight: number;
+  globalKeyColor: string;
+  globalValueColor: string;
+  textTransform: TextTransform;
 
-    // Layout
-    alignment: Alignment;
-    rowSpacing: number;
-    valuePadding: number;
-    borderRadius: number;
-    containerPadding: number;
-    containerBgColor: string;
-    enableShadow: boolean;
+  // Layout
+  alignment: Alignment;
+  rowSpacing: number;
+  valuePadding: number;
+  borderRadius: number;
+  containerPadding: number;
+  containerBgColor: string;
+  enableShadow: boolean;
 }
 
 // ── Styles props (width / height from Superset) ────────────────────
 export interface KpiDualColumnCardStylesProps {
-    height: number;
-    width: number;
+  height: number;
+  width: number;
 }
 
 // ── Combined chart component props ─────────────────────────────────
 export interface KpiDualColumnCardProps extends KpiDualColumnCardStylesProps {
-    data: TimeseriesDataRecord[];
-    customize: KpiDualColumnCardCustomizeProps;
+  data: TimeseriesDataRecord[];
+  customize: KpiDualColumnCardCustomizeProps;
 }
 
 // ── Query form data ────────────────────────────────────────────────
 export type KpiDualColumnCardQueryFormData = QueryFormData &
-    KpiDualColumnCardStylesProps &
-    KpiDualColumnCardCustomizeProps;
+  KpiDualColumnCardStylesProps &
+  KpiDualColumnCardCustomizeProps;

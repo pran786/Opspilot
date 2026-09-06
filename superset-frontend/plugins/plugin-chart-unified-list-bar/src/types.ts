@@ -19,41 +19,49 @@
 import { QueryFormData, TimeseriesDataRecord } from '@superset-ui/core';
 
 export interface UnifiedListBarChartStylesProps {
-    height: number;
-    width: number;
-    headerFontSize?: string;
-    boldText?: boolean;
+  height: number;
+  width: number;
+  headerFontSize?: string;
+  boldText?: boolean;
 }
 
 export interface UnifiedListBarChartCustomizeProps {
-    keyColumn: string;
-    keySubColumn?: string;
-    secondaryColumns: string[];
-    metricColumn?: string;
-    maxMetricColumn?: string;
-    severityColumn?: string;
-    colorColumn?: string;
-    displayValueColumn?: string;
-    rowsPerItem: '1' | '2';
-    alignMetric: 'left' | 'right';
-    showBar: boolean;
-    showMetricValue: boolean;
-    keyFontSize: number;
-    keyColor: string;
-    keySubFontSize: number;
-    secondaryFontSize: number;
-    displayValueFontSize: number;
-    barColorPositive: string;
-    barColorNegative: string;
-    conditionalColorRules?: any[];
-    iconRules?: any[];
+  keyColumn: string;
+  keySubColumn?: string;
+  secondaryColumns: string[];
+  metricColumn?: string;
+  maxMetricColumn?: string;
+  severityColumn?: string;
+  colorColumn?: string;
+  displayValueColumn?: string;
+  rowsPerItem: '1' | '2';
+  alignMetric: 'left' | 'right';
+  showBar: boolean;
+  showMetricValue: boolean;
+  keyFontSize: number;
+  keyColor: string;
+  keySubFontSize: number;
+  keySubColor?: string;
+  secondaryFontSize: number;
+  secondaryColor?: string;
+  displayValueFontSize: number;
+  displayValueColor?: string;
+  headerTitle?: string;
+  headerSubtitle?: string;
+  headerSubtitleColor?: string;
+  headerBadge?: string;
+  headerBadgeColor?: string;
+  barColorPositive: string;
+  barColorNegative: string;
+  conditionalColorRules?: any[];
+  iconRules?: any[];
 }
 
 export type UnifiedListBarChartQueryFormData = QueryFormData &
-    UnifiedListBarChartStylesProps &
-    UnifiedListBarChartCustomizeProps;
+  UnifiedListBarChartStylesProps &
+  UnifiedListBarChartCustomizeProps;
 
 export interface UnifiedListBarChartProps extends UnifiedListBarChartStylesProps {
-    data: TimeseriesDataRecord[];
-    customize: UnifiedListBarChartCustomizeProps;
+  data: TimeseriesDataRecord[];
+  customize: UnifiedListBarChartCustomizeProps;
 }
