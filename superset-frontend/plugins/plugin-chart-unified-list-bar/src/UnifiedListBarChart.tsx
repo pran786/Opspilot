@@ -64,12 +64,72 @@ class ChartErrorBoundary extends React.Component<
 }
 
 function UnifiedListBarChartContent(props: UnifiedListBarChartProps) {
-  const { data = [], height = 400, width = 600, customize = {} as any } = props || {};
-  const { metricColumn, maxMetricColumn } = customize || {};
+  const {
+    data = [],
+    height = 400,
+    width = 600,
+    customize = {} as any,
+  } = props || {};
+  const {
+    metricColumn,
+    maxMetricColumn,
+    headerTitle,
+    headerSubtitle,
+    headerSubtitleColor = '#2B6CB0',
+    headerBadge,
+    headerBadgeColor = '#DC2626',
+  } = customize || {};
 
   if (!data || !Array.isArray(data) || data.length === 0) {
     return (
       <Styles height={height} width={width}>
+        {headerTitle && (
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              marginBottom: 8,
+              paddingLeft: 4,
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span
+                style={{
+                  fontSize: 22,
+                  fontWeight: 700,
+                  color: '#9CA3AF',
+                  letterSpacing: '-0.3px',
+                }}
+              >
+                {headerTitle}
+              </span>
+              {headerBadge && (
+                <span
+                  style={{
+                    fontSize: 24,
+                    fontWeight: 800,
+                    color: headerBadgeColor,
+                  }}
+                >
+                  {headerBadge}
+                </span>
+              )}
+            </div>
+            {headerSubtitle && (
+              <span
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: headerSubtitleColor,
+                  paddingLeft: 135,
+                  marginTop: -2,
+                }}
+              >
+                {headerSubtitle}
+              </span>
+            )}
+          </div>
+        )}
         <div style={{ padding: 16, color: '#888', textAlign: 'center' }}>
           No data available
         </div>
@@ -86,6 +146,53 @@ function UnifiedListBarChartContent(props: UnifiedListBarChartProps) {
 
   return (
     <Styles height={height} width={width}>
+      {headerTitle && (
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            marginBottom: 8,
+            paddingLeft: 4,
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span
+              style={{
+                fontSize: 22,
+                fontWeight: 700,
+                color: '#9CA3AF',
+                letterSpacing: '-0.3px',
+              }}
+            >
+              {headerTitle}
+            </span>
+            {headerBadge && (
+              <span
+                style={{
+                  fontSize: 24,
+                  fontWeight: 800,
+                  color: headerBadgeColor,
+                }}
+              >
+                {headerBadge}
+              </span>
+            )}
+          </div>
+          {headerSubtitle && (
+            <span
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: headerSubtitleColor,
+                paddingLeft: 135,
+                marginTop: -2,
+              }}
+            >
+              {headerSubtitle}
+            </span>
+          )}
+        </div>
+      )}
       {data.map((record, index) => {
         // Determine row-specific max
         let rowMax = maxMetricValue;

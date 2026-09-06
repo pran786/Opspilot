@@ -16,72 +16,77 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData, ensureIsArray } from '@superset-ui/core';
+import {
+  buildQueryContext,
+  QueryFormData,
+  ensureIsArray,
+} from '@superset-ui/core';
 
 /**
  * Ensures every column object has a `label` property to prevent
  * "ValueError: Missing label" from the Superset backend.
  */
 const ensureColumnLabel = (column: any) => {
-    if (typeof column === 'string') return column;
-    if (column && typeof column === 'object') {
-        if (column.label) return column;
-        if (column.sqlExpression) return column;
-        if (column.column_name) return { ...column, label: column.column_name };
-        if (column.column?.column_name) {
-            return { ...column, label: column.column.column_name };
-        }
-        return {
-            ...column,
-            label: `calculated_column_${Math.random().toString(36).substring(7)}`,
-        };
+  if (typeof column === 'string') return column;
+  if (column && typeof column === 'object') {
+    if (column.label) return column;
+    if (column.sqlExpression) return column;
+    if (column.column_name) return { ...column, label: column.column_name };
+    if (column.column?.column_name) {
+      return { ...column, label: column.column.column_name };
     }
-    return column;
+    return {
+      ...column,
+      label: `calculated_column_${Math.random().toString(36).substring(7)}`,
+    };
+  }
+  return column;
 };
 
 export default function buildQuery(formData: QueryFormData) {
-    const {
-        title_column,
-        subtitle_column,
-        kpi_columns = [],
-        ticker_message_column,
-    } = formData;
+  const title_column = formData.title_column || (formData as any).titleColumn;
+  const subtitle_column =
+    formData.subtitle_column || (formData as any).subtitleColumn;
+  const kpi_columns =
+    formData.kpi_columns || (formData as any).kpiColumns || [];
+  const ticker_message_column =
+    formData.ticker_message_column || (formData as any).tickerMessageColumn;
 
-    const formDataCopy = {
-        ...formData,
-        query_mode: 'raw',
-        include_time: false,
-    };
+  const formDataCopy = {
+    ...formData,
+    query_mode: 'raw',
+    include_time: false,
+  };
 
-    return buildQueryContext(formDataCopy, (baseQueryObject) => {
-        const rawColumns = [
-            ...ensureIsArray(title_column),
-            ...ensureIsArray(subtitle_column),
-            ...ensureIsArray(kpi_columns),
-            ...ensureIsArray(ticker_message_column),
-        ].filter(Boolean);
+  return buildQueryContext(formDataCopy, baseQueryObject => {
+    const rawColumns = [
+      ...ensureIsArray(title_column),
+      ...ensureIsArray(subtitle_column),
+      ...ensureIsArray(kpi_columns),
+      ...ensureIsArray(ticker_message_column),
+    ].filter(Boolean);
 
-        // Deduplicate by label/column_name
-        const seen = new Set<string>();
-        const uniqueColumns = rawColumns.filter((col) => {
-            const key =
-                typeof col === 'string'
-                    ? col
-                    : col?.label || col?.column_name || JSON.stringify(col);
-            if (seen.has(key)) return false;
-            seen.add(key);
-            return true;
-        });
-
-        const columns = uniqueColumns.map(ensureColumnLabel);
-
-        return [
-            {
-                ...baseQueryObject,
-                columns,
-                metrics: undefined,
-                groupby: undefined,
-            },
-        ];
+    // Deduplicate by label/column_name
+    const seen = new Set<string>();
+    const uniqueColumns = rawColumns.filter(col => {
+      const key =
+        typeof col === 'string'
+          ? col
+          : col?.label || col?.column_name || JSON.stringify(col);
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
     });
+
+    const columns = uniqueColumns.map(ensureColumnLabel);
+
+    return [
+      {
+        ...baseQueryObject,
+        columns,
+        metrics: undefined,
+        groupby: undefined,
+      },
+    ];
+  });
 }

@@ -47,18 +47,21 @@ export const Styles = styled.div<{ height: number; width: number }>`
   width: ${({ width }) => width}px;
   overflow-y: auto;
   overflow-x: hidden;
-  font-family: ${({ theme }) => getTheme(theme)?.typography?.families?.sansSerif || fallbackTheme.typography.families.sansSerif};
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  font-family: ${({ theme }) =>
+    getTheme(theme)?.typography?.families?.sansSerif ||
+    fallbackTheme.typography.families.sansSerif};
 `;
 
 export const RowContainer = styled.div<{ rowsPerItem: '1' | '2' }>`
   display: flex;
   flex-direction: row;
-  align-items: stretch;
-  padding: ${({ theme }) => (getTheme(theme)?.gridUnit || fallbackTheme.gridUnit) * 2}px;
-  border-bottom: 1px solid ${({ theme }) => getTheme(theme)?.colors?.grayscale?.light2 || fallbackTheme.colors.grayscale.light2};
-  &:hover {
-    background-color: ${({ theme }) => getTheme(theme)?.colors?.grayscale?.light5 || fallbackTheme.colors.grayscale.light5};
-  }
+  align-items: center;
+  padding: 4px 0;
+  border-bottom: none;
 `;
 
 // Left section: Key Column + Sub Text
@@ -66,20 +69,26 @@ export const KeySection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 100px;
-  padding-right: ${({ theme }) => (getTheme(theme)?.gridUnit || fallbackTheme.gridUnit) * 3}px;
+  min-width: 90px;
+  padding-right: 12px;
 `;
 
 export const KeyField = styled.div<{ fontSize: number; color: string }>`
   font-size: ${({ fontSize }) => fontSize}px;
   color: ${({ color }) => color};
-  font-weight: ${({ theme }) => getTheme(theme)?.typography?.weights?.bold || fallbackTheme.typography.weights.bold};
+  font-weight: 800;
+  white-space: nowrap;
+  letter-spacing: -0.5px;
 `;
 
-export const KeySubField = styled.div<{ fontSize: number }>`
+export const KeySubField = styled.div<{ fontSize: number; color?: string }>`
   font-size: ${({ fontSize }) => fontSize}px;
-  color: ${({ theme }) => getTheme(theme)?.colors?.grayscale?.base || fallbackTheme.colors.grayscale.base};
-  margin-top: ${({ theme }) => (getTheme(theme)?.gridUnit || fallbackTheme.gridUnit)}px;
+  color: ${({ color, theme }) =>
+    color ||
+    getTheme(theme)?.colors?.grayscale?.base ||
+    fallbackTheme.colors.grayscale.base};
+  margin-top: 2px;
+  white-space: nowrap;
 `;
 
 // Right section: Secondary Columns + Bar
@@ -88,28 +97,35 @@ export const ContentSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-width: 0;
 `;
 
 export const SecondaryFieldsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: ${({ theme }) => (getTheme(theme)?.gridUnit || fallbackTheme.gridUnit)}px;
+  gap: 1px;
 `;
 
-export const SecondaryField = styled.div<{ fontSize: number }>`
+export const SecondaryField = styled.div<{ fontSize: number; color?: string }>`
   font-size: ${({ fontSize }) => fontSize}px;
-  color: ${({ theme }) => getTheme(theme)?.colors?.grayscale?.base || fallbackTheme.colors.grayscale.base};
+  color: ${({ color, theme }) =>
+    color ||
+    getTheme(theme)?.colors?.grayscale?.base ||
+    fallbackTheme.colors.grayscale.base};
+  font-weight: 700;
+  white-space: nowrap;
 `;
 
 // Bar section: below secondary columns
 export const BarSection = styled.div`
-  margin-top: ${({ theme }) => (getTheme(theme)?.gridUnit || fallbackTheme.gridUnit) * 2}px;
+  margin-top: ${({ theme }) =>
+    (getTheme(theme)?.gridUnit || fallbackTheme.gridUnit) * 2}px;
 `;
 
 export const BarContainer = styled.div`
   width: 100%;
   height: 8px;
-  background-color: ${({ theme }) => getTheme(theme)?.colors?.grayscale?.light2 || fallbackTheme.colors.grayscale.light2};
+  background-color: #ece8de;
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -123,8 +139,12 @@ export const BarFill = styled.div<{ width: number; color: string }>`
 
 export const MetricValue = styled.span`
   font-size: 18px;
-  font-weight: ${({ theme }) => getTheme(theme)?.typography?.weights?.bold || fallbackTheme.typography.weights.bold};
-  color: ${({ theme }) => getTheme(theme)?.colors?.grayscale?.dark1 || fallbackTheme.colors.grayscale.dark1};
+  font-weight: ${({ theme }) =>
+    getTheme(theme)?.typography?.weights?.bold ||
+    fallbackTheme.typography.weights.bold};
+  color: ${({ theme }) =>
+    getTheme(theme)?.colors?.grayscale?.dark1 ||
+    fallbackTheme.colors.grayscale.dark1};
 `;
 
 export const IconContainer = styled.span`
@@ -144,5 +164,6 @@ export const MetricContainer = styled.div<{ align: 'left' | 'right' }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: ${({ align }) => (align === 'right' ? 'flex-end' : 'flex-start')};
+  align-items: ${({ align }) =>
+    align === 'right' ? 'flex-end' : 'flex-start'};
 `;

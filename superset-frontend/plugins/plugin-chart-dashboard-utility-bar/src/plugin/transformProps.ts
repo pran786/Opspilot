@@ -16,14 +16,18 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { ChartProps, TimeseriesDataRecord, ensureIsArray } from '@superset-ui/core';
 import {
-    DashboardUtilityBarProps,
-    DashboardUtilityBarCustomizeProps,
-    LayoutMode,
-    OverlayPosition,
-    OverlayAnimation,
-    TickerDirection,
+  ChartProps,
+  TimeseriesDataRecord,
+  ensureIsArray,
+} from '@superset-ui/core';
+import {
+  DashboardUtilityBarProps,
+  DashboardUtilityBarCustomizeProps,
+  LayoutMode,
+  OverlayPosition,
+  OverlayAnimation,
+  TickerDirection,
 } from '../types';
 
 /**
@@ -31,131 +35,144 @@ import {
  * (which can be string, array, or adhoc column object).
  */
 const getColumnName = (col: any): string => {
-    if (!col) return '';
-    if (typeof col === 'string') return col;
-    if (Array.isArray(col) && col.length > 0) return getColumnName(col[0]);
-    if (typeof col === 'object') {
-        if (col.label) return col.label;
-        if (col.column_name) return col.column_name;
-        if (col.column?.column_name) return col.column.column_name;
-        if (col.sqlExpression) return col.sqlExpression;
-    }
-    return String(col);
+  if (!col) return '';
+  if (typeof col === 'string') return col;
+  if (Array.isArray(col) && col.length > 0) return getColumnName(col[0]);
+  if (typeof col === 'object') {
+    if (col.label) return col.label;
+    if (col.column_name) return col.column_name;
+    if (col.column?.column_name) return col.column.column_name;
+    if (col.sqlExpression) return col.sqlExpression;
+  }
+  return String(col);
 };
 
 /**
  * Convert a ColorPickerControl RGBA object to a CSS color string.
  */
-const rgbaToString = (color: any, fallback = 'rgba(30, 30, 30, 0.95)'): string => {
-    if (typeof color === 'string') return color;
-    if (
-        color &&
-        typeof color === 'object' &&
-        'r' in color &&
-        'g' in color &&
-        'b' in color
-    ) {
-        const a = color.a !== undefined ? color.a : 1;
-        return `rgba(${color.r}, ${color.g}, ${color.b}, ${a})`;
-    }
-    return fallback;
+const rgbaToString = (
+  color: any,
+  fallback = 'rgba(30, 30, 30, 0.95)',
+): string => {
+  if (typeof color === 'string') return color;
+  if (
+    color &&
+    typeof color === 'object' &&
+    'r' in color &&
+    'g' in color &&
+    'b' in color
+  ) {
+    const a = color.a !== undefined ? color.a : 1;
+    return `rgba(${color.r}, ${color.g}, ${color.b}, ${a})`;
+  }
+  return fallback;
 };
 
 export default function transformProps(
-    chartProps: ChartProps,
+  chartProps: ChartProps,
 ): DashboardUtilityBarProps {
-    const { width, height, formData, queriesData } = chartProps;
+  const { width, height, formData, queriesData } = chartProps;
 
-    const {
-        titleColumn,
-        subtitleColumn,
-        kpiColumns,
-        tickerMessageColumn,
-        layoutMode = 'header',
-        overlayPosition = 'top',
-        overlayZIndex = 1000,
-        overlayAnimation = 'slide',
-        showTitle = true,
-        showSubtitle = false,
-        showClock = false,
-        showDate = false,
-        showWeather = false,
-        showKpi = true,
-        showTicker = false,
-        showCustomRightSlot = false,
-        tickerSpeed = 20,
-        tickerDirection = 'left',
-        tickerSeparator = '  •  ',
-        autoHideNoData = false,
-        autoHideSeconds = 0,
-        backgroundColor,
-        textColor,
-        titleFontSize,
-        title_font_size: titleFontSizeSnake,
-        dateFontSize,
-        date_font_size: dateFontSizeSnake,
-        clockFontSize,
-        clock_font_size: clockFontSizeSnake,
-        weatherIconSize,
-        weather_icon_size: weatherIconSizeSnake,
-        temperatureFontSize,
-        temperature_font_size: temperatureFontSizeSnake,
-        showTemperature,
-        show_temperature: showTemperatureSnake,
-    } = formData as any;
+  const {
+    titleColumn,
+    subtitleColumn,
+    kpiColumns,
+    tickerMessageColumn,
+    layoutMode = 'header',
+    overlayPosition = 'top',
+    overlayZIndex = 1000,
+    overlayAnimation = 'slide',
+    showTitle = true,
+    showSubtitle = false,
+    showClock = false,
+    showDate = false,
+    showWeather = false,
+    showKpi = true,
+    showTicker = false,
+    showCustomRightSlot = false,
+    tickerSpeed = 20,
+    tickerDirection = 'left',
+    tickerSeparator = '  •  ',
+    autoHideNoData = false,
+    autoHideSeconds = 0,
+    backgroundColor,
+    textColor,
+    titleFontSize,
+    title_font_size: titleFontSizeSnake,
+    dateFontSize,
+    date_font_size: dateFontSizeSnake,
+    clockFontSize,
+    clock_font_size: clockFontSizeSnake,
+    weatherIconSize,
+    weather_icon_size: weatherIconSizeSnake,
+    temperatureFontSize,
+    temperature_font_size: temperatureFontSizeSnake,
+    showTemperature,
+    show_temperature: showTemperatureSnake,
+  } = formData as any;
 
-    // Safely extract data — handle undefined / empty queriesData
-    const data = (queriesData?.[0]?.data as TimeseriesDataRecord[]) ?? [];
+  // Safely extract data — handle undefined / empty queriesData
+  const data = (queriesData?.[0]?.data as TimeseriesDataRecord[]) ?? [];
 
-    const titleColumnName = getColumnName(titleColumn);
-    const subtitleColumnName = getColumnName(subtitleColumn);
-    const kpiColumnNames = ensureIsArray(kpiColumns)
-        .map(getColumnName)
-        .filter(Boolean);
-    const tickerMessageColumnName = getColumnName(tickerMessageColumn);
+  const titleColumnName = getColumnName(
+    titleColumn || (formData as any).title_column,
+  );
+  const subtitleColumnName = getColumnName(
+    subtitleColumn || (formData as any).subtitle_column,
+  );
+  const kpiColumnNames = ensureIsArray(
+    kpiColumns || (formData as any).kpi_columns,
+  )
+    .map(getColumnName)
+    .filter(Boolean);
+  const tickerMessageColumnName = getColumnName(
+    tickerMessageColumn || (formData as any).ticker_message_column,
+  );
 
-    const customize: DashboardUtilityBarCustomizeProps = {
-        layoutMode: layoutMode as LayoutMode,
-        overlayPosition: overlayPosition as OverlayPosition,
-        overlayZIndex: Number(overlayZIndex) || 1000,
-        overlayAnimation: overlayAnimation as OverlayAnimation,
+  const customize: DashboardUtilityBarCustomizeProps = {
+    layoutMode: layoutMode as LayoutMode,
+    overlayPosition: overlayPosition as OverlayPosition,
+    overlayZIndex: Number(overlayZIndex) || 1000,
+    overlayAnimation: overlayAnimation as OverlayAnimation,
 
-        titleColumn: titleColumnName || undefined,
-        subtitleColumn: subtitleColumnName || undefined,
-        kpiColumns: kpiColumnNames,
-        tickerMessageColumn: tickerMessageColumnName || undefined,
+    titleColumn: titleColumnName || undefined,
+    subtitleColumn: subtitleColumnName || undefined,
+    kpiColumns: kpiColumnNames,
+    tickerMessageColumn: tickerMessageColumnName || undefined,
 
-        showTitle,
-        showSubtitle,
-        showClock,
-        showDate,
-        showWeather,
-        showKpi,
-        showTicker,
-        showCustomRightSlot,
+    showTitle,
+    showSubtitle,
+    showClock,
+    showDate,
+    showWeather,
+    showKpi,
+    showTicker,
+    showCustomRightSlot,
 
-        tickerSpeed: Number(tickerSpeed) || 20,
-        tickerDirection: tickerDirection as TickerDirection,
-        tickerSeparator: tickerSeparator ?? '  •  ',
+    tickerSpeed: Number(tickerSpeed) || 20,
+    tickerDirection: tickerDirection as TickerDirection,
+    tickerSeparator: tickerSeparator ?? '  •  ',
 
-        autoHideNoData,
-        autoHideSeconds: Number(autoHideSeconds) || 0,
+    autoHideNoData,
+    autoHideSeconds: Number(autoHideSeconds) || 0,
 
-        backgroundColor: rgbaToString(backgroundColor, 'rgba(30, 30, 30, 0.95)'),
-        textColor: rgbaToString(textColor, 'rgba(255, 255, 255, 1)'),
+    backgroundColor: rgbaToString(backgroundColor, 'rgba(30, 30, 30, 0.95)'),
+    textColor: rgbaToString(textColor, 'rgba(255, 255, 255, 1)'),
 
-        titleFontSize: Number(titleFontSize ?? titleFontSizeSnake ?? 15) || 15,
-        dateFontSize: Number(dateFontSize ?? dateFontSizeSnake ?? 11) || 11,
-        clockFontSize: Number(clockFontSize ?? clockFontSizeSnake ?? 16) || 16,
-        weatherIconSize: Number(weatherIconSize ?? weatherIconSizeSnake ?? 18) || 18,
-        temperatureFontSize: Number(temperatureFontSize ?? temperatureFontSizeSnake ?? 13) || 13,
-        showTemperature: (() => {
-            const raw = showTemperature ?? showTemperatureSnake;
-            if (raw === undefined || raw === null) return true;
-            if (raw === false || raw === 0 || raw === 'false') return false;
-            return true;
-        })(),
-    };
+    titleFontSize: Number(titleFontSize ?? titleFontSizeSnake ?? 15) || 15,
+    dateFontSize: Number(dateFontSize ?? dateFontSizeSnake ?? 11) || 11,
+    clockFontSize: Number(clockFontSize ?? clockFontSizeSnake ?? 16) || 16,
+    weatherIconSize:
+      Number(weatherIconSize ?? weatherIconSizeSnake ?? 18) || 18,
+    temperatureFontSize:
+      Number(temperatureFontSize ?? temperatureFontSizeSnake ?? 13) || 13,
+    showTemperature: (() => {
+      const raw = showTemperature ?? showTemperatureSnake;
+      if (raw === undefined || raw === null) return true;
+      if (raw === false || raw === 0 || raw === 'false') return false;
+      return true;
+    })(),
+  };
 
-    return { width, height, data, customize };
+  return { width, height, data, customize };
 }

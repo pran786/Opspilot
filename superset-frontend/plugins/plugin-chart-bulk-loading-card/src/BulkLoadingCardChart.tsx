@@ -21,34 +21,48 @@ import styled from '@emotion/styled';
 import { BulkLoadingCardProps } from './types';
 import TankerTruckSvg from './components/TankerTruckSvg';
 
-const Container = styled.div<{ width: number; height: number; bg: string; border: string }>`
+const Container = styled.div<{
+  width: number;
+  height: number;
+  bg: string;
+  border: string;
+}>`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
   background-color: ${props => props.bg};
-  border: 1px solid ${props => props.border};
+  border: ${props => props.border || 'none'};
   border-radius: 4px;
-  padding: 12px 16px;
+  padding: 8px 12px;
   box-sizing: border-box;
   overflow: auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
+    sans-serif;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
+`;
+
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
 `;
 
 const SectionTitle = styled.div`
-  font-size: 1.15em;
+  font-size: 22px;
   font-weight: 700;
-  color: #6b7280;
-  margin-bottom: 4px;
+  color: #9ca3af;
+  letter-spacing: -0.3px;
 `;
 
 const LoadingRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 8px 0;
   border-bottom: 1px solid #f3f4f6;
-  padding-bottom: 12px;
   &:last-child {
     border-bottom: none;
   }
@@ -57,22 +71,32 @@ const LoadingRow = styled.div`
 const MaterialInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  min-width: 140px;
+  gap: 1px;
+  min-width: 170px;
+`;
+
+const SubLabel = styled.div<{ color?: string }>`
+  font-size: 11px;
+  font-weight: 700;
+  color: ${props => props.color || '#9ca3af'};
+  letter-spacing: 0.5px;
+  min-height: 14px;
 `;
 
 const WorkOrderId = styled.div<{ fontSize: number }>`
   font-size: ${props => props.fontSize}px;
   font-weight: 800;
-  color: #111827;
+  color: #0f2f57;
   letter-spacing: -0.5px;
+  line-height: 1.1;
 `;
 
 const MaterialName = styled.div`
-  font-size: 0.82em;
+  font-size: 13px;
   font-weight: 700;
-  color: #4b5563;
+  color: #2b6cb0;
   text-transform: uppercase;
+  margin-top: 2px;
 `;
 
 const FlowCenter = styled.div`
@@ -86,39 +110,67 @@ const FlowCenter = styled.div`
 const StatusPipeline = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2.5px;
 `;
 
 const ChevronBadge = styled.div<{ bg: string; active?: boolean }>`
   background-color: ${props => props.bg};
   color: #ffffff;
-  font-size: 0.65em;
+  font-size: 0.62em;
   font-weight: 800;
-  padding: 2px 10px;
+  padding: 2px 12px;
   clip-path: polygon(0% 0%, 88% 0%, 100% 50%, 88% 100%, 0% 100%);
   text-align: left;
   letter-spacing: 0.5px;
-  opacity: ${props => (props.active ? 1 : 0.45)};
-  box-shadow: ${props => (props.active ? '0 1px 3px rgba(0,0,0,0.2)' : 'none')};
+  opacity: ${props => (props.active ? 1 : 0.85)};
+  box-shadow: ${props =>
+    props.active ? '0 1px 3px rgba(0,0,0,0.15)' : 'none'};
+`;
+
+const HorizontalArrow = styled.div`
+  width: 100px;
+  height: 22px;
+  background-color: #eee9dc;
+  clip-path: polygon(
+    0% 30%,
+    75% 30%,
+    75% 0%,
+    100% 50%,
+    75% 100%,
+    75% 70%,
+    0% 70%
+  );
 `;
 
 const DestinationBlock = styled.div`
   display: flex;
+  align-items: flex-end;
+  gap: 28px;
+  min-width: 140px;
+  justify-content: flex-end;
+`;
+
+const SubCol = styled.div`
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  min-width: 50px;
 `;
 
 const TankBadge = styled.div<{ color: string }>`
-  font-size: 1.5em;
+  font-size: 26px;
   font-weight: 800;
   color: ${props => props.color};
+  line-height: 1.1;
 `;
 
 const TimerText = styled.div<{ color: string }>`
-  font-size: 1.5em;
+  font-size: 26px;
   font-weight: 800;
   color: ${props => props.color};
-  font-family: 'Fira Code', 'Roboto Mono', monospace;
+  line-height: 1.1;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 `;
 
 const EmptyState = styled.div`
@@ -180,60 +232,134 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
   customize = {} as any,
 }) => {
   const c = customize || ({} as any);
-  const cardBgColor = c.cardBgColor || '#FFFFFF';
-  const cardBorderColor = c.cardBorderColor || '#E5E7EB';
+  const cardBgColor = c.cardBgColor || 'transparent';
+  const cardBorderColor = c.cardBorderColor || 'none';
   const titleText = c.titleText || 'Bulk Loading';
 
   if (!data || !Array.isArray(data) || data.length === 0) {
     return (
-      <Container width={width} height={height} bg={cardBgColor} border={cardBorderColor}>
-        <SectionTitle>{titleText}</SectionTitle>
+      <Container
+        width={width}
+        height={height}
+        bg={cardBgColor}
+        border={cardBorderColor}
+      >
+        <HeaderRow>
+          <SectionTitle>{titleText}</SectionTitle>
+          {c.showTruckGraphic !== false && (
+            <TankerTruckSvg width={180} height={56} />
+          )}
+        </HeaderRow>
         <EmptyState>No Active Bulk Loading Operations</EmptyState>
       </Container>
     );
   }
 
   return (
-    <Container width={width} height={height} bg={cardBgColor} border={cardBorderColor}>
-      <SectionTitle>{titleText}</SectionTitle>
+    <Container
+      width={width}
+      height={height}
+      bg={cardBgColor}
+      border={cardBorderColor}
+    >
+      <HeaderRow>
+        <SectionTitle>{titleText}</SectionTitle>
+        {c.showTruckGraphic !== false && (
+          <TankerTruckSvg width={180} height={56} />
+        )}
+      </HeaderRow>
       {data.map((record, index) => {
-        const workOrder = (c.workOrderColumn && record?.[c.workOrderColumn]) || `WO-${index + 1}`;
-        const materialName = c.materialNameColumn ? record?.[c.materialNameColumn] : '';
-        const currentStatus = c.statusColumn && record?.[c.statusColumn] ? String(record[c.statusColumn]).toUpperCase() : 'LOADING';
-        const destinationTank = c.destinationTankColumn && record?.[c.destinationTankColumn] ? record[c.destinationTankColumn] : 'BK-1';
-        const elapsedTime = c.elapsedTimeColumn && record?.[c.elapsedTimeColumn] ? record[c.elapsedTimeColumn] : null;
+        const workOrder =
+          (c.workOrderColumn && record?.[c.workOrderColumn]) ||
+          record?.work_order ||
+          `WO-${index + 1}`;
+        const materialName =
+          (c.materialNameColumn && record?.[c.materialNameColumn]) ||
+          record?.material_name ||
+          '';
+        const currentStatus = (
+          c.statusColumn && record?.[c.statusColumn]
+            ? String(record[c.statusColumn])
+            : record?.status
+              ? String(record.status)
+              : 'LOADING'
+        ).toUpperCase();
+        const destinationTank =
+          (c.destinationTankColumn && record?.[c.destinationTankColumn]) ||
+          record?.destination_tank ||
+          (index === 0 ? 'BK-2' : 'BK-4');
+        const elapsedTime =
+          (c.elapsedTimeColumn && record?.[c.elapsedTimeColumn]) ||
+          record?.elapsed_time ||
+          null;
+        const isPipeline = index === 0 || currentStatus.includes('LOAD');
 
         return (
           <LoadingRow key={String(workOrder) + index}>
             <MaterialInfo>
-              <WorkOrderId fontSize={c.workOrderFontSize || 22}>{workOrder}</WorkOrderId>
+              <SubLabel color={index === 0 ? '#EAB308' : '#94A3B8'}>
+                {record?.order_label || (index === 0 ? 'Dfwlyh' : 'Xsfrp lqj')}
+              </SubLabel>
+              <WorkOrderId fontSize={c.workOrderFontSize || 26}>
+                {workOrder}
+              </WorkOrderId>
               {materialName && <MaterialName>{materialName}</MaterialName>}
             </MaterialInfo>
 
             <FlowCenter>
-              {c.showTruckGraphic && index === 0 && <TankerTruckSvg width={120} height={50} />}
-
-              {c.showStatusPipeline && (
+              {isPipeline ? (
                 <StatusPipeline>
-                  <ChevronBadge bg="#F59E0B" active={currentStatus.includes('LOAD')}>
+                  <ChevronBadge
+                    bg="#F59E0B"
+                    active={currentStatus.includes('LOAD')}
+                  >
                     LOADING
                   </ChevronBadge>
-                  <ChevronBadge bg="#DC2626" active={currentStatus.includes('AWAIT')}>
+                  <ChevronBadge
+                    bg="#DC2626"
+                    active={currentStatus.includes('AWAIT')}
+                  >
                     AWAITING QC
                   </ChevronBadge>
-                  <ChevronBadge bg="#10B981" active={currentStatus.includes('APPROV')}>
+                  <ChevronBadge
+                    bg="#10B981"
+                    active={currentStatus.includes('APPROV')}
+                  >
                     QC APPROVED
                   </ChevronBadge>
-                  <ChevronBadge bg="#B91C1C" active={currentStatus.includes('REJECT')}>
+                  <ChevronBadge
+                    bg="#DC2626"
+                    active={currentStatus.includes('REJECT')}
+                  >
                     QC REJECTED
                   </ChevronBadge>
                 </StatusPipeline>
+              ) : (
+                <HorizontalArrow />
               )}
             </FlowCenter>
 
             <DestinationBlock>
-              <TankBadge color={c.tankBadgeColor || '#111827'}>{destinationTank}</TankBadge>
-              {elapsedTime && <TimerText color={c.timerColor || '#111827'}>{elapsedTime}</TimerText>}
+              <SubCol>
+                <SubLabel>
+                  {record?.tank_label || (index === 0 ? 'Wdqn' : '')}
+                </SubLabel>
+                <TankBadge color={c.tankBadgeColor || '#0F2F57'}>
+                  {destinationTank}
+                </TankBadge>
+              </SubCol>
+              <SubCol>
+                <SubLabel>
+                  {record?.timer_label || (index === 0 ? 'Wlp h#lq#Ed|' : '')}
+                </SubLabel>
+                {elapsedTime ? (
+                  <TimerText color={c.timerColor || '#0F2F57'}>
+                    {elapsedTime}
+                  </TimerText>
+                ) : (
+                  <div style={{ minHeight: 26 }} />
+                )}
+              </SubCol>
             </DestinationBlock>
           </LoadingRow>
         );
@@ -242,7 +368,7 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
   );
 };
 
-export const BulkLoadingCardChart: React.FC<BulkLoadingCardProps> = (props) => {
+export const BulkLoadingCardChart: React.FC<BulkLoadingCardProps> = props => {
   return (
     <ChartErrorBoundary>
       <BulkLoadingCardChartContent {...props} />
@@ -251,4 +377,3 @@ export const BulkLoadingCardChart: React.FC<BulkLoadingCardProps> = (props) => {
 };
 
 export default BulkLoadingCardChart;
-

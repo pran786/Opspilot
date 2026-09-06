@@ -16,57 +16,63 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-import { buildQueryContext, QueryFormData, ensureIsArray } from '@superset-ui/core';
+import {
+  buildQueryContext,
+  QueryFormData,
+  ensureIsArray,
+} from '@superset-ui/core';
 import { uniq } from 'lodash';
 
 const ensureColumnLabel = (column: any) => {
-    if (typeof column === 'string') return column;
-    if (column && typeof column === 'object') {
-        if (column.label) return column;
-        if (column.sqlExpression) return column;
-        if (column.column_name) return { ...column, label: column.column_name };
-        if (column.column && column.column.column_name) {
-            return { ...column, label: column.column.column_name };
-        }
-        return {
-            ...column,
-            label: `calculated_column_${Math.random().toString(36).substring(7)}`,
-        };
+  if (typeof column === 'string') return column;
+  if (column && typeof column === 'object') {
+    if (column.label) return column;
+    if (column.sqlExpression) return column;
+    if (column.column_name) return { ...column, label: column.column_name };
+    if (column.column && column.column.column_name) {
+      return { ...column, label: column.column.column_name };
     }
-    return column;
+    return {
+      ...column,
+      label: `calculated_column_${Math.random().toString(36).substring(7)}`,
+    };
+  }
+  return column;
 };
 
 export default function buildQuery(formData: QueryFormData) {
-    const {
-        key_column,
-        value_column,
-        val_box_color_column,
-        val_text_color_column,
-    } = formData;
+  const key_column = formData.key_column || (formData as any).keyColumn;
+  const value_column = formData.value_column || (formData as any).valueColumn;
+  const val_box_color_column =
+    formData.val_box_color_column || (formData as any).valBoxColorColumn;
+  const val_text_color_column =
+    formData.val_text_color_column || (formData as any).valTextColorColumn;
+  const group_column = formData.group_column || (formData as any).groupColumn;
 
-    const formDataCopy = {
-        ...formData,
-        query_mode: 'raw',
-        include_time: false,
-    };
+  const formDataCopy = {
+    ...formData,
+    query_mode: 'raw',
+    include_time: false,
+  };
 
-    return buildQueryContext(formDataCopy, (baseQueryObject) => {
-        const rawColumns = uniq([
-            ...ensureIsArray(key_column),
-            ...ensureIsArray(value_column),
-            ...ensureIsArray(val_box_color_column),
-            ...ensureIsArray(val_text_color_column),
-        ]).filter(Boolean);
+  return buildQueryContext(formDataCopy, baseQueryObject => {
+    const rawColumns = uniq([
+      ...ensureIsArray(key_column),
+      ...ensureIsArray(value_column),
+      ...ensureIsArray(val_box_color_column),
+      ...ensureIsArray(val_text_color_column),
+      ...ensureIsArray(group_column),
+    ]).filter(Boolean);
 
-        const columns = rawColumns.map(col => ensureColumnLabel(col));
+    const columns = rawColumns.map(col => ensureColumnLabel(col));
 
-        return [
-            {
-                ...baseQueryObject,
-                columns,
-                metrics: undefined,
-                groupby: undefined,
-            },
-        ];
-    });
+    return [
+      {
+        ...baseQueryObject,
+        columns,
+        metrics: undefined,
+        groupby: undefined,
+      },
+    ];
+  });
 }
