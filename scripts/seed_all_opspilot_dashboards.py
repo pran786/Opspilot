@@ -27,6 +27,42 @@ import os
 import subprocess
 import sys
 
+def ensure_postgres_examples_db():
+    """Verify and auto-repair PostgreSQL 'examples' user & database if needed."""
+    try:
+        from superset.app import create_app
+        app = create_app()
+        with app.app_context():
+            from superset import db
+            from sqlalchemy import text
+            try:
+                with db.engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
+                    if db.engine.dialect.name == "postgresql":
+                        print(">>> Preflight check: Ensuring PostgreSQL 'examples' user and database exist...")
+                        conn.execute(text("""
+                            DO $$
+                            BEGIN
+                                IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'examples') THEN
+                                    CREATE USER examples WITH PASSWORD 'examples';
+                                ELSE
+                                    ALTER USER examples WITH PASSWORD 'examples';
+                                END IF;
+                            END
+                            $$;
+                        """))
+                        db_exists = conn.execute(
+                            text("SELECT 1 FROM pg_database WHERE datname = 'examples'")
+                        ).scalar()
+                        if not db_exists:
+                            conn.execute(text("CREATE DATABASE examples OWNER examples;"))
+                        conn.execute(text("GRANT ALL PRIVILEGES ON DATABASE examples TO examples;"))
+                        conn.execute(text("GRANT ALL ON SCHEMA public TO examples;"))
+                        print(">>> PostgreSQL 'examples' user & database ready.")
+            except Exception as e:
+                print(f">>> Note: Preflight database check: {e}")
+    except Exception as e:
+        print(f">>> Note: Could not initialize Superset app for preflight check: {e}")
+
 def main():
     script_dir = os.path.dirname(os.path.abspath(__file__))
     scripts = [
@@ -39,6 +75,8 @@ def main():
     print("==========================================================")
     print(" OpsPilot Master Big-Screen Dashboard Seeder")
     print("==========================================================")
+
+    ensure_postgres_examples_db()
 
     for script_name in scripts:
         script_path = os.path.join(script_dir, script_name)

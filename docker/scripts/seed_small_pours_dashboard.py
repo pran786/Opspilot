@@ -41,13 +41,69 @@ with app.app_context():
 
     print(">>> Starting 5-Small Pours Dashboard Seeding...")
 
-    # 1. Locate primary database
-    database = db.session.query(Database).filter_by(database_name="examples").first()
-    if not database:
-        database = db.session.query(Database).filter_by(database_name="main").first()
-    if not database:
-        database = db.session.query(Database).first()
+    # 1. Locate primary database with automatic PostgreSQL repair and fallback
+    def get_working_database():
+        def can_connect(d):
+            if not d:
+                return False
+            try:
+                with d.get_sqla_engine() as eng:
+                    with eng.connect() as c:
+                        c.execute(text("SELECT 1"))
+                return True
+            except Exception:
+                return False
 
+        # Attempt to auto-repair 'examples' user & database if on PostgreSQL
+        try:
+            with db.engine.connect().execution_options(isolation_level="AUTOCOMMIT") as conn:
+                if db.engine.dialect.name == "postgresql":
+                    conn.execute(text("""
+                        DO $$
+                        BEGIN
+                            IF NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'examples') THEN
+                                CREATE USER examples WITH PASSWORD 'examples';
+                            ELSE
+                                ALTER USER examples WITH PASSWORD 'examples';
+                            END IF;
+                        END
+                        $$;
+                    """))
+                    db_exists = conn.execute(
+                        text("SELECT 1 FROM pg_database WHERE datname = 'examples'")
+                    ).scalar()
+                    if not db_exists:
+                        conn.execute(text("CREATE DATABASE examples OWNER examples;"))
+                    conn.execute(text("GRANT ALL PRIVILEGES ON DATABASE examples TO examples;"))
+                    conn.execute(text("GRANT ALL ON SCHEMA public TO examples;"))
+        except Exception:
+            pass
+
+        # Check 'examples'
+        target = db.session.query(Database).filter_by(database_name="examples").first()
+        if can_connect(target):
+            return target
+
+        # Check 'superset' or 'main'
+        for name in ["superset", "main"]:
+            cand = db.session.query(Database).filter_by(database_name=name).first()
+            if can_connect(cand):
+                return cand
+
+        # Check any database that connects
+        for any_db in db.session.query(Database).all():
+            if can_connect(any_db):
+                return any_db
+
+        # Fall back to registering the app database
+        app_db = db.session.query(Database).filter_by(database_name="superset").first()
+        if not app_db:
+            app_db = Database(database_name="superset", sqlalchemy_uri=str(db.engine.url))
+            db.session.add(app_db)
+            db.session.commit()
+        return app_db
+
+    database = get_working_database()
     if not database:
         raise RuntimeError("No Superset database connection found.")
 
