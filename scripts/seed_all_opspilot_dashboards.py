@@ -96,6 +96,8 @@ def main():
             print(f"❌ Error running {script_name}! (Exit code {result.returncode})")
             sys.exit(result.returncode)
 
+    ensure_dashboard_permissions_and_owners()
+
     print("\n==========================================================")
     print(" All OpsPilot Dashboards Seeded Successfully!")
     print(" Dashboards available:")
@@ -105,5 +107,42 @@ def main():
     print("   - 5-Small Pours:      /opspilot/dashboard/5-small-pours/?standalone=3")
     print("==========================================================")
 
+def ensure_dashboard_permissions_and_owners():
+    """Ensure admin ownership and grant dataset/database access to Gamma & Public roles."""
+    print("\n>>> Post-seeding: Ensuring dashboard ownership and database permissions...")
+    try:
+        from superset.app import create_app
+        app = create_app()
+        with app.app_context():
+            from superset import db, security_manager
+            from superset.models.core import Database
+            from superset.models.dashboard import Dashboard
+
+            # 1. Assign admin as owner to all 4 OpsPilot dashboards
+            admin = security_manager.find_user("admin")
+            target_slugs = ["1-receiving", "2-wh-replenishment", "3-totefarm", "5-small-pours"]
+            dashboards = db.session.query(Dashboard).filter(Dashboard.slug.in_(target_slugs)).all()
+            for d in dashboards:
+                if admin and admin not in d.owners:
+                    d.owners.append(admin)
+                d.published = True
+            db.session.commit()
+            print(f">>> Ensured admin ownership for {len(dashboards)} OpsPilot dashboards.")
+
+            # 2. Grant 'database access on [examples]' to Gamma and Public roles
+            examples_db = db.session.query(Database).filter_by(database_name="examples").first()
+            if examples_db and examples_db.perm:
+                perm_view = security_manager.find_permission_view_menu("database_access", examples_db.perm)
+                if perm_view:
+                    for role_name in ["Gamma", "Public"]:
+                        role = security_manager.find_role(role_name)
+                        if role:
+                            security_manager.add_permission_role(role, perm_view)
+                            print(f">>> Granted database access on [examples] to '{role_name}' role.")
+            db.session.commit()
+    except Exception as e:
+        print(f">>> Note: Post-seeding permission check warning: {e}")
+
 if __name__ == "__main__":
     main()
+

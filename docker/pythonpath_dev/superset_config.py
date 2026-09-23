@@ -398,7 +398,12 @@ def FLASK_APP_MUTATOR(app):
             new_path = request.path.replace("/superset/dashboard/", "/opspilot/dashboard/", 1)
             qs = request.query_string.decode("utf-8")
             return redirect(f"{new_path}{'?' + qs if qs else ''}")
+        if request.path.startswith("/dashboard/"):
+            new_path = request.path.replace("/dashboard/", "/opspilot/dashboard/", 1)
+            qs = request.query_string.decode("utf-8")
+            return redirect(f"{new_path}{'?' + qs if qs else ''}")
         if request.path in ("/superset/file-handler", "/superset/file-handler/"):
             qs = request.query_string.decode("utf-8")
             return redirect(f"/opspilot/file-handler{'?' + qs if qs else ''}")
+
 

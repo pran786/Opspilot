@@ -25,10 +25,10 @@ if [ "$DEV_MODE" == "true" ]; then
       echo "Installing superset-core in editable mode"
       uv pip install --no-deps -e /app/superset-core
 
-      # Only reinstall the main app for non-worker processes
+      # Install main app in editable mode so changes and migrations in /app are live
       if [ "$1" != "worker" ] && [ "$1" != "beat" ]; then
         echo "Reinstalling the app in editable mode"
-        uv pip install -e .
+        uv pip install --no-deps -e /app || true
       fi
     fi
 fi
@@ -44,13 +44,15 @@ fi
 # Skip postgres requirements installation for workers to avoid conflicts
 if [[ "$DATABASE_DIALECT" == postgres* ]] && [ "$(whoami)" = "root" ] && [ "$1" != "worker" ] && [ "$1" != "beat" ]; then
     # older images may not have the postgres dev requirements installed
-    echo "Installing postgres requirements"
-    if command -v uv > /dev/null 2>&1; then
-        # Use uv in newer images
-        uv pip install -e .[postgres]
-    else
-        # Use pip in older images
-        pip install -e .[postgres]
+    if ! python -c "import psycopg2" > /dev/null 2>&1; then
+        echo "Installing postgres requirements"
+        if command -v uv > /dev/null 2>&1; then
+            # Use uv in newer images
+            uv pip install --no-deps -e .[postgres] || true
+        else
+            # Use pip in older images
+            pip install --no-deps -e .[postgres] || true
+        fi
     fi
 fi
 #
@@ -79,8 +81,8 @@ case "${1}" in
     celery --app=superset.tasks.celery_app:app beat --pidfile /tmp/celerybeat.pid -l INFO -s "${SUPERSET_HOME}"/celerybeat-schedule
     ;;
   app)
-    echo "Starting web app (using development server)..."
-    flask run -p $PORT --reload --debugger --without-threads --host=0.0.0.0 --exclude-patterns "*/node_modules/*:*/.venv/*:*/build/*:*/__pycache__/*"
+    echo "Starting web app (gunicorn)..."
+    /usr/bin/run-server.sh
     ;;
   app-gunicorn)
     echo "Starting web app..."
