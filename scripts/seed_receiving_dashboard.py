@@ -511,6 +511,7 @@ with app.app_context():
             "intervals": "16.7,33.3,50",
             "intervalColorIndices": "1,2,3",
             "intervalColors": "#DC2626,#EAB308,#16A34A",
+            "color_scheme": "risk_meter_red_yellow_green",
             "interval_colors": "#DC2626,#EAB308,#16A34A",
             "showTickLabels": False,
             "show_tick_labels": False,

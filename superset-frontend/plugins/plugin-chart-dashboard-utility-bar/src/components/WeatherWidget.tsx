@@ -10,40 +10,36 @@ interface WeatherData {
     weatherCode: number;
 }
 
-/**
- * Your exact emoji mapping — unchanged
- */
-const getWeatherIcon = (code: number): string => {
-    if (code === 0) return '☀️';
-    if (code <= 3) return '⛅';
-    if (code <= 49) return '🌫️';
-    if (code <= 59) return '🌧️';
-    if (code <= 69) return '🌨️';
-    if (code <= 79) return '🌨️';
-    if (code <= 84) return '🌧️';
-    if (code <= 94) return '⛈️';
-    return '🌩️';
-};
+const SunCloudSvg: React.FC<{ size: number; color?: string }> = ({ size, color = '#FFFFFF' }) => (
+    <svg
+        width={size}
+        height={size}
+        viewBox="0 0 36 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        style={{ display: 'inline-block', verticalAlign: 'middle' }}
+    >
+        {/* Sun with rays in background */}
+        <circle cx="25" cy="11" r="4.5" fill={color} />
+        <line x1="25" y1="3" x2="25" y2="5" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+        <line x1="30.5" y1="5.5" x2="29" y2="7" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+        <line x1="33" y1="11" x2="31" y2="11" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+        <line x1="19.5" y1="5.5" x2="21" y2="7" stroke={color} strokeWidth="1.6" strokeLinecap="round" />
+        {/* Cloud in foreground */}
+        <path
+            d="M10 27 C7.2 27 5 24.8 5 22 C5 19.5 6.9 17.4 9.4 17.1 C10.4 13.6 13.8 11 18 11 C22.6 11 26.3 14.4 26.8 19 C29.1 19.4 31 21.4 31 23.8 C31 26.1 29.2 27 27 27 Z"
+            fill={color}
+        />
+    </svg>
+);
 
 /**
- * Simple Emoji Icon Renderer
+ * Weather Icon Renderer - uses vector SVG matching reference mockup
  */
 const WeatherIcon: React.FC<{ code: number; size: number }> = ({
-    code,
     size,
 }) => {
-    return (
-        <span
-            style={{
-                fontSize: size,
-                lineHeight: 1,
-                display: 'inline-flex',
-                alignItems: 'center',
-            }}
-        >
-            {getWeatherIcon(code)}
-        </span>
-    );
+    return <SunCloudSvg size={size} color="#FFFFFF" />;
 };
 
 interface WeatherWidgetProps {

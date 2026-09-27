@@ -187,7 +187,7 @@ function DashboardUtilityBarContent(props: DashboardUtilityBarProps) {
 
     // ─── Current date string ──────────────────────────────────────────
     const dateString = useMemo(() => {
-        return new Date().toLocaleDateString(undefined, {
+        return new Date().toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
@@ -212,7 +212,7 @@ function DashboardUtilityBarContent(props: DashboardUtilityBarProps) {
         );
     }
 
-    if (leftElements.length > 0) {
+    if (leftElements.length > 0 && ((showKpi && kpiValues.length > 0) || showTicker)) {
         leftElements.push(<Divider key="div-after-title" />);
     }
 

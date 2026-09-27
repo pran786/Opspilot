@@ -22,3 +22,15 @@ declare module '*.gif';
 declare module '*.png';
 declare module '*.jpg';
 declare module '*.jpeg';
+declare module 'markdown-to-jsx';
+declare module 'react-ace' {
+  import { Component } from 'react';
+  export interface IAceEditorProps {
+    [key: string]: any;
+  }
+  export default class AceEditor extends Component<IAceEditorProps> {
+    editor: any;
+    refEditor: any;
+    [key: string]: any;
+  }
+}

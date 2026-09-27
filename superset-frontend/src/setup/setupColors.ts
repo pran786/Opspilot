@@ -68,6 +68,27 @@ export default function setupColors(
   const extraSequentialColorSchemes = extraSequentialColorSchemeConfigs.map(
     config => new SequentialScheme(config),
   );
+  const builtInOpsPilotSchemes = [
+    new CategoricalScheme({
+      id: 'risk_meter_yellow_to_green',
+      label: 'Risk Meter Theme (Yellow to Green)',
+      group: ColorSchemeGroup.Custom,
+      colors: ['#EAB308', '#16A34A'],
+    }),
+    new CategoricalScheme({
+      id: 'risk_meter_red_yellow_green',
+      label: 'Risk Meter Theme (Red - Yellow - Green)',
+      group: ColorSchemeGroup.Custom,
+      colors: ['#DC2626', '#EAB308', '#16A34A'],
+    }),
+    new CategoricalScheme({
+      id: 'risk_meter',
+      label: 'Risk Meter Theme (Green to Red)',
+      group: ColorSchemeGroup.Custom,
+      colors: ['#008450', '#D19900', '#B81D13'],
+    }),
+  ];
+
   registerColorSchemes(
     getCategoricalSchemeRegistry(),
     [
@@ -84,6 +105,7 @@ export default function setupColors(
       ...CategoricalBlueToGreen,
       ...CategoricalRedToYellow,
       ...CategoricalWavesOfBlue,
+      ...builtInOpsPilotSchemes,
       ...extraCategoricalColorSchemes,
     ],
     'supersetColors',

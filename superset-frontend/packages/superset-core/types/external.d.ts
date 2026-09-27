@@ -20,3 +20,11 @@
  * Stub for the untyped jed module.
  */
 declare module 'jed';
+
+declare const process: {
+  env: {
+    WEBPACK_MODE?: string;
+    NODE_ENV?: string;
+    [key: string]: string | undefined;
+  };
+};

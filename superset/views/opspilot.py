@@ -79,7 +79,7 @@ class OpspilotView(BaseSupersetView):
         dashboard_id_or_slug: str,
         add_extra_log_payload: Callable[..., None] = lambda **kwargs: None,
     ) -> FlaskResponse:
-        """Server side rendering for a dashboard."""
+        dashboard_id_or_slug = dashboard_id_or_slug.strip('/')
         dashboard = Dashboard.get(dashboard_id_or_slug)
 
         if not dashboard:

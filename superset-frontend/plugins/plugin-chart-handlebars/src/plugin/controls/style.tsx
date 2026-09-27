@@ -59,7 +59,7 @@ const StyleControl = (props: CustomControlConfig<StyleCustomControlProps>) => {
         mode="css"
         value={props.value}
         defaultValue={defaultValue}
-        onChange={source => {
+        onChange={(source: string) => {
           debounceFunc(props.onChange, source || '');
         }}
       />

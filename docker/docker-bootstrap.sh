@@ -18,21 +18,36 @@
 
 set -eo pipefail
 
+export VIRTUAL_ENV=/app/.venv
+
+REQUIREMENTS_LOCAL="/app/docker/requirements-local.txt"
+if [ -f "${REQUIREMENTS_LOCAL}" ]; then
+  echo "Installing local overrides at ${REQUIREMENTS_LOCAL}"
+  if command -v uv > /dev/null 2>&1; then
+    uv pip install --no-cache-dir -r "${REQUIREMENTS_LOCAL}"
+  else
+    pip install --no-cache-dir -r "${REQUIREMENTS_LOCAL}"
+  fi
+fi
+
 # Make python interactive
 if [ "$DEV_MODE" == "true" ]; then
     if [ "$(whoami)" = "root" ] && command -v uv > /dev/null 2>&1; then
       # Always ensure superset-core is available
-      echo "Installing superset-core in editable mode"
-      uv pip install --no-deps -e /app/superset-core
+      if ! python -c "import superset_core" > /dev/null 2>&1; then
+        echo "Installing superset-core in editable mode"
+        uv pip install --no-deps -e /app/superset-core
+      fi
 
       # Install main app in editable mode so changes and migrations in /app are live
       if [ "$1" != "worker" ] && [ "$1" != "beat" ]; then
-        echo "Reinstalling the app in editable mode"
-        uv pip install --no-deps -e /app || true
+        if ! python -c "import superset" > /dev/null 2>&1; then
+          echo "Reinstalling the app in editable mode"
+          uv pip install --no-deps -e /app || true
+        fi
       fi
     fi
 fi
-REQUIREMENTS_LOCAL="/app/docker/requirements-local.txt"
 PORT=${PORT:-8088}
 # If Cypress run – overwrite the password for admin and export env variables
 if [ "$CYPRESS_CONFIG" == "true" ]; then
@@ -54,19 +69,6 @@ if [[ "$DATABASE_DIALECT" == postgres* ]] && [ "$(whoami)" = "root" ] && [ "$1" 
             pip install --no-deps -e .[postgres] || true
         fi
     fi
-fi
-#
-# Make sure we have dev requirements installed
-#
-if [ -f "${REQUIREMENTS_LOCAL}" ]; then
-  echo "Installing local overrides at ${REQUIREMENTS_LOCAL}"
-  if command -v uv > /dev/null 2>&1; then
-    uv pip install --no-cache-dir -r "${REQUIREMENTS_LOCAL}"
-  else
-    pip install --no-cache-dir -r "${REQUIREMENTS_LOCAL}"
-  fi
-else
-  echo "Skipping local overrides"
 fi
 
 case "${1}" in

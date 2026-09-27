@@ -27,6 +27,7 @@ x-superset-volumes: &superset-volumes
   - ./superset-frontend:/app/superset-frontend
   - superset_home:/app/superset_home
   - ./tests:/app/tests
+  - ./scripts:/app/scripts
   - superset_data:/app/data
 
 services:

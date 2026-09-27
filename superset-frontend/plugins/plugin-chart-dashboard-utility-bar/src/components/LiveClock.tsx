@@ -47,17 +47,18 @@ const LiveClock: React.FC<LiveClockProps> = ({ fontSize = 16 }) => {
         };
     }, []);
 
-    const formatted = time.toLocaleTimeString(undefined, {
-        hour: '2-digit',
+    const formatted = time.toLocaleTimeString('en-US', {
+        hour: 'numeric',
         minute: '2-digit',
         second: '2-digit',
+        hour12: true,
     });
 
     return (
         <span
             style={{
                 fontSize,
-                fontWeight: 600,
+                fontWeight: 700,
                 fontVariantNumeric: 'tabular-nums',
                 flexShrink: 0,
                 lineHeight: 1.2,

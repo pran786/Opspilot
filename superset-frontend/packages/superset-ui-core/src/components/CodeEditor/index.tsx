@@ -49,11 +49,12 @@ export type CodeEditorTheme = 'light' | 'dark';
 
 export interface CodeEditorProps extends Omit<
   IAceEditorProps,
-  'mode' | 'theme'
+  'mode' | 'theme' | 'onChange'
 > {
   mode?: CodeEditorMode;
   theme?: CodeEditorTheme;
   name?: string;
+  onChange?: (value: string) => void;
 }
 
 export const CodeEditor: FC<CodeEditorProps> = ({

@@ -147,10 +147,24 @@ except ImportError:
 EXTRA_CATEGORICAL_COLOR_SCHEMES = [
      {
          "id": 'risk_meter',
-         "description": '',
-         "label": 'Rik Meter Theme RYG',
+         "description": 'Risk Meter Green to Red',
+         "label": 'Risk Meter Theme (Green to Red)',
          "colors":
-          ['#008450','#D19900','#B81D13']
+          ['#008450', '#D19900', '#B81D13']
+     },
+     {
+         "id": 'risk_meter_yellow_to_green',
+         "description": 'Risk Meter Yellow to Green',
+         "label": 'Risk Meter Theme (Yellow to Green)',
+         "colors":
+          ['#EAB308', '#16A34A']
+     },
+     {
+         "id": 'risk_meter_red_yellow_green',
+         "description": 'Risk Meter Red - Yellow - Green',
+         "label": 'Risk Meter Theme (Red - Yellow - Green)',
+         "colors":
+          ['#DC2626', '#EAB308', '#16A34A']
      },
      {
         "id": 'ey_color_palette',

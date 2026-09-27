@@ -81,7 +81,7 @@ ${helperDescriptions
       <CodeEditor
         theme="dark"
         value={val}
-        onChange={source => {
+        onChange={(source: string) => {
           debounceFunc(props.onChange, source || '');
         }}
       />

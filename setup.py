@@ -54,7 +54,7 @@ version_string = version_string.replace("-dev", ".dev0")
 setup(
     name="apache_superset",
     version=version_string,
-    packages=find_packages(),
+    packages=find_packages(include=["superset", "superset.*"]),
     include_package_data=True,
     zip_safe=False,
     entry_points={

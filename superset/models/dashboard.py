@@ -454,6 +454,8 @@ def is_int(value: str | int) -> bool:
 
 
 def id_or_slug_filter(id_or_slug: int | str) -> BinaryExpression:
+    if isinstance(id_or_slug, str):
+        id_or_slug = id_or_slug.strip('/')
     if is_int(id_or_slug):
         return Dashboard.id == int(id_or_slug)
     if is_uuid(id_or_slug):

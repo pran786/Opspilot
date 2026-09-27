@@ -73,14 +73,11 @@ export const getIntervalBoundsAndColors = (
 
   if (colorMode === 'default' && !intervals) return [];
 
-  let intervalBoundsNonNormalized;
-  let intervalColorIndicesArray;
+  let intervalBoundsNonNormalized: number[] = [];
   try {
     intervalBoundsNonNormalized = parseNumbersList(intervals, ',');
-    intervalColorIndicesArray = parseNumbersList(intervalColorIndices, ',');
   } catch (error) {
-    intervalBoundsNonNormalized = [] as number[];
-    intervalColorIndicesArray = [] as number[];
+    intervalBoundsNonNormalized = [];
   }
 
   const intervalBounds = intervalBoundsNonNormalized.map(
@@ -100,13 +97,21 @@ export const getIntervalBoundsAndColors = (
     ]);
   }
 
-  const intervalColors = intervalColorIndicesArray.map(
-    ind => colorFn.colors[(ind - 1) % colorFn.colors.length],
-  );
+  // Support both comma-separated color indices (1,2,3) AND hex color codes (#DC2626,#EAB308,#16A34A)
+  const rawIntervalColors = intervalColorIndices
+    ? intervalColorIndices.split(',').map(s => s.trim())
+    : [];
 
   return intervalBounds.map((val, idx) => {
-    const color = intervalColors[idx];
-    return [val, color || colorFn.colors[idx]];
+    const rawItem = rawIntervalColors[idx];
+    if (rawItem && (rawItem.startsWith('#') || rawItem.startsWith('rgb') || rawItem.startsWith('hsl'))) {
+      return [val, rawItem];
+    }
+    const ind = Number(rawItem);
+    if (!Number.isNaN(ind) && ind > 0) {
+      return [val, colorFn.colors[(ind - 1) % colorFn.colors.length]];
+    }
+    return [val, colorFn.colors[idx % colorFn.colors.length]];
   });
 };
 
