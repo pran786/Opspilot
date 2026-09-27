@@ -71,6 +71,20 @@ export type EchartsGaugeFormData = QueryFormData & {
     show_tick_labels: boolean;
     tick_density: 'low' | 'medium' | 'high';
     animation_duration: number;
+    custom_subtitle?: string;
+    customSubtitle?: string;
+    subtitle_offset_y?: string;
+    subtitleOffsetY?: string;
+    subtitle_font_size?: number;
+    subtitleFontSize?: number;
+    subtitle_font_weight?: string;
+    subtitleFontWeight?: string;
+    subtitle_color?: { r: number; g: number; b: number; a: number } | string;
+    subtitleColor?: { r: number; g: number; b: number; a: number } | string;
+    center_val_offset_y?: string;
+    centerValOffsetY?: string;
+    show_groupby_label?: boolean;
+    showGroupbyLabel?: boolean;
 };
 
 export const DEFAULT_FORM_DATA: Partial<EchartsGaugeFormData> = {
@@ -109,6 +123,13 @@ export const DEFAULT_FORM_DATA: Partial<EchartsGaugeFormData> = {
     show_tick_labels: true,
     tick_density: 'medium',
     animation_duration: 1000,
+    custom_subtitle: '',
+    subtitle_offset_y: '52%',
+    subtitle_font_size: 13,
+    subtitle_font_weight: 'bold',
+    subtitle_color: '#0F2F57',
+    center_val_offset_y: '18%',
+    show_groupby_label: false,
 };
 
 export interface EchartsGaugeChartProps extends BaseChartProps<EchartsGaugeFormData> {

@@ -233,35 +233,120 @@ export default function transformProps(
   const columnsLabelMap = new Map<string, string[]>();
   const metricLabel = getMetricLabel(metric as QueryFormMetric);
 
+  const rawFormData = (chartProps as any).rawFormData || {};
+  const mergedFormData: any = { ...rawFormData, ...formData };
+
+  const rawStartAngle =
+    mergedFormData.start_angle !== undefined
+      ? mergedFormData.start_angle
+      : mergedFormData.startAngle !== undefined
+        ? mergedFormData.startAngle
+        : startAngle;
+  const rawEndAngle =
+    mergedFormData.end_angle !== undefined
+      ? mergedFormData.end_angle
+      : mergedFormData.endAngle !== undefined
+        ? mergedFormData.endAngle
+        : endAngle;
+  const finalStartAngle =
+    rawStartAngle !== undefined && !isNaN(Number(rawStartAngle))
+      ? Number(rawStartAngle)
+      : 225;
+  const finalEndAngle =
+    rawEndAngle !== undefined && !isNaN(Number(rawEndAngle))
+      ? Number(rawEndAngle)
+      : -45;
+
+  const isSemiCircle = finalStartAngle === 180 && finalEndAngle === 0;
+
   const customSubtitle =
-    (formData as any).custom_subtitle || (formData as any).customSubtitle;
+    mergedFormData.custom_subtitle ||
+    mergedFormData.customSubtitle ||
+    mergedFormData.subtitle;
+
+  const defaultSubtitleOffsetY = isSemiCircle ? '52%' : '60%';
+  const defaultCenterValOffsetY = isSemiCircle ? '18%' : '40%';
+
   const subtitleOffsetY =
-    (formData as any).subtitle_offset_y || (formData as any).subtitleOffsetY;
-  const subtitleFontSize =
-    (formData as any).subtitle_font_size || (formData as any).subtitleFontSize;
-  const subtitleFontWeight =
-    (formData as any).subtitle_font_weight ||
-    (formData as any).subtitleFontWeight;
-  const subtitleColor =
-    (formData as any).subtitle_color || (formData as any).subtitleColor;
+    mergedFormData.subtitle_offset_y !== undefined
+      ? mergedFormData.subtitle_offset_y
+      : mergedFormData.subtitleOffsetY !== undefined
+        ? mergedFormData.subtitleOffsetY
+        : defaultSubtitleOffsetY;
+
   const centerValOffsetY =
-    (formData as any).center_val_offset_y || (formData as any).centerValOffsetY;
+    mergedFormData.center_val_offset_y !== undefined
+      ? mergedFormData.center_val_offset_y
+      : mergedFormData.centerValOffsetY !== undefined
+        ? mergedFormData.centerValOffsetY
+        : defaultCenterValOffsetY;
+
+  const subtitleFontSize =
+    mergedFormData.subtitle_font_size ||
+    mergedFormData.subtitleFontSize ||
+    13;
+
+  const subtitleFontWeight =
+    mergedFormData.subtitle_font_weight ||
+    mergedFormData.subtitleFontWeight ||
+    'bold';
+
+  const subtitleColor =
+    mergedFormData.subtitle_color
+      ? typeof mergedFormData.subtitle_color === 'object'
+        ? getRgba(mergedFormData.subtitle_color)
+        : mergedFormData.subtitle_color
+      : mergedFormData.subtitleColor
+        ? typeof mergedFormData.subtitleColor === 'object'
+          ? getRgba(mergedFormData.subtitleColor)
+          : mergedFormData.subtitleColor
+        : '#0F2F57';
 
   const transformedData: GaugeDataItemOption[] = data.map(
     (data_point, index) => {
-      const name =
-        customSubtitle ||
-        ((formData as any).show_groupby_label === false ||
-        (formData as any).showGroupbyLabel === false
-          ? groupbyLabels
-              .map((column: string) => `${data_point[column]}`)
-              .join('\n')
-          : groupbyLabels
-              .map(
-                (column: string) =>
-                  `${verboseMap[column] || column}: ${data_point[column]}`,
-              )
-              .join(', '));
+      let name = '';
+      if (customSubtitle) {
+        name = customSubtitle;
+      } else {
+        const showPrefix =
+          mergedFormData.show_groupby_label === true ||
+          mergedFormData.showGroupbyLabel === true;
+
+        if (showPrefix) {
+          name = groupbyLabels
+            .map(
+              (column: string) =>
+                `${verboseMap[column] || column}: ${data_point[column]}`,
+            )
+            .join(', ');
+        } else {
+          const values = groupbyLabels
+            .map((column: string) => {
+              let val = String(data_point[column] ?? '');
+              // Strip any leading prefix like "metric_name: " or "column: "
+              val = val.replace(/^[a-zA-Z0-9_-]+:\s*/, '');
+              return val;
+            })
+            .filter(Boolean);
+
+          name = values.join('\n');
+        }
+      }
+
+      // Strip any residual prefix like "metric_name: "
+      if (name) {
+        name = name.replace(/^[a-zA-Z0-9_-]+:\s*/, '');
+      }
+
+      // If the label is a multi-word industrial metric label without newlines,
+      // stack words with \n so it displays cleanly under the gauge arc
+      if (name && !name.includes('\n')) {
+        const words = name.trim().split(/\s+/);
+        if (words.length >= 2 && words.length <= 4) {
+          name = words.join('\n');
+        }
+      }
+
       const colorLabel = groupbyLabels.map(
         (col: string) => data_point[col] as string,
       );
@@ -276,33 +361,19 @@ export default function transformProps(
           color: colorFn(colorLabel, sliceId),
         },
         title: {
-          offsetCenter: [
-            '0%',
-            subtitleOffsetY !== undefined
-              ? subtitleOffsetY
-              : `${index * titleOffsetFromTitle + OFFSETS.titleFromCenter}%`,
-          ],
-          fontSize: Number(subtitleFontSize) || fontSize,
-          fontWeight:
-            subtitleFontWeight || (customSubtitle ? 'bold' : 'normal'),
-          color: subtitleColor || theme.colorTextSecondary,
-          lineHeight: 18,
+          offsetCenter: ['0%', subtitleOffsetY],
+          fontSize: Number(subtitleFontSize) || 13,
+          fontWeight: subtitleFontWeight || 'bold',
+          color: subtitleColor,
+          lineHeight: 16,
         },
         detail: {
-          offsetCenter: [
-            '0%',
-            centerValOffsetY !== undefined
-              ? centerValOffsetY
-              : `${
-                  index * titleOffsetFromTitle +
-                  OFFSETS.titleFromCenter +
-                  detailOffsetFromTitle
-                }%`,
-          ],
+          offsetCenter: ['0%', centerValOffsetY],
           fontSize:
-            centerValSize || FONT_SIZE_MULTIPLIERS.detailFontSize * fontSize,
-          fontWeight: centerValWeight || 'normal',
-          color: centerValColor ? getRgba(centerValColor) : theme.colorText,
+            Number(centerValSize) ||
+            (isSemiCircle ? 36 : FONT_SIZE_MULTIPLIERS.detailFontSize * fontSize),
+          fontWeight: centerValWeight || 'bold',
+          color: centerValColor ? getRgba(centerValColor) : '#EAB308',
           show: showCenterVal !== false,
         },
       };
@@ -434,30 +505,12 @@ export default function transformProps(
     },
   };
 
-  const rawStartAngle =
-    (formData as any).start_angle !== undefined
-      ? (formData as any).start_angle
-      : startAngle;
-  const rawEndAngle =
-    (formData as any).end_angle !== undefined
-      ? (formData as any).end_angle
-      : endAngle;
-  const finalStartAngle =
-    rawStartAngle !== undefined && !isNaN(Number(rawStartAngle))
-      ? Number(rawStartAngle)
-      : 225;
-  const finalEndAngle =
-    rawEndAngle !== undefined && !isNaN(Number(rawEndAngle))
-      ? Number(rawEndAngle)
-      : -45;
-
-  const isSemiCircle = finalStartAngle === 180 && finalEndAngle === 0;
   const gaugeCenterX =
-    (formData as any).gauge_center_x || (formData as any).gaugeCenterX || '50%';
+    mergedFormData.gauge_center_x || mergedFormData.gaugeCenterX || '50%';
   const defaultCenterY = isSemiCircle ? '62%' : '55%';
   const gaugeCenterY =
-    (formData as any).gauge_center_y ||
-    (formData as any).gaugeCenterY ||
+    mergedFormData.gauge_center_y ||
+    mergedFormData.gaugeCenterY ||
     defaultCenterY;
 
   let pointer;

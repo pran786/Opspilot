@@ -483,6 +483,14 @@ const config = {
         APP_DIR,
         'plugins/plugin-chart-dashboard-utility-bar/src',
       ),
+      'plugin-chart-custom-gauge': path.resolve(
+        APP_DIR,
+        'plugins/plugin-chart-custom-gauge/src',
+      ),
+      '@superset-ui/plugin-chart-custom-gauge': path.resolve(
+        APP_DIR,
+        'plugins/plugin-chart-custom-gauge/src',
+      ),
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.yml'],
     fallback: {

@@ -439,6 +439,8 @@ with app.app_context():
             "subtitleColor": "#2B6CB0",
             "subtitle_color": "#2B6CB0",
             "valSuffix": "",
+            "show_groupby_label": False,
+            "showGroupbyLabel": False,
             "groupby": ["metric_name"],
             "row_limit": 10,
         }
@@ -494,6 +496,8 @@ with app.app_context():
             "subtitle_color": "#2B6CB0",
             "valSuffix": "MT",
             "val_suffix": "MT",
+            "show_groupby_label": False,
+            "showGroupbyLabel": False,
             "groupby": ["metric_name"],
             "row_limit": 10,
         }
@@ -592,6 +596,8 @@ with app.app_context():
             "subtitleColor": "#0F2F57",
             "subtitle_color": "#0F2F57",
             "valSuffix": "",
+            "show_groupby_label": False,
+            "showGroupbyLabel": False,
             "groupby": ["metric_name"],
             "row_limit": 10,
         }

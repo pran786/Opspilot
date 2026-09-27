@@ -355,6 +355,92 @@ const config: ControlPanelConfig = {
                     },
                 ],
                 ['currency_format'],
+                [<ControlSubSectionHeader>{t('Subtitle & Label Settings')}</ControlSubSectionHeader>],
+                [
+                    {
+                        name: 'custom_subtitle',
+                        config: {
+                            type: 'TextAreaControl',
+                            label: t('Custom Subtitle'),
+                            description: t('Text displayed below or inside the gauge. Use newlines to stack words.'),
+                            default: '',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'show_groupby_label',
+                        config: {
+                            type: 'CheckboxControl',
+                            label: t('Show Groupby Column Name'),
+                            description: t('Prefix subtitle with column name (e.g. metric_name: ...)'),
+                            default: false,
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'subtitle_offset_y',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Subtitle Offset Y'),
+                            description: t('Vertical position of the subtitle text (e.g. 52%)'),
+                            default: '52%',
+                            renderTrigger: true,
+                        },
+                    },
+                    {
+                        name: 'center_val_offset_y',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Value Offset Y'),
+                            description: t('Vertical position of the center numeric value (e.g. 18%)'),
+                            default: '18%',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'subtitle_font_size',
+                        config: {
+                            type: 'SliderControl',
+                            label: t('Subtitle Font Size'),
+                            default: 13,
+                            min: 8,
+                            max: 36,
+                            renderTrigger: true,
+                        },
+                    },
+                    {
+                        name: 'subtitle_font_weight',
+                        config: {
+                            type: 'SelectControl',
+                            label: t('Subtitle Font Weight'),
+                            default: 'bold',
+                            choices: [
+                                ['normal', 'Normal'],
+                                ['bold', 'Bold'],
+                                ['600', 'Semi-Bold'],
+                                ['800', 'Extra Bold'],
+                            ],
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'subtitle_color',
+                        config: {
+                            type: 'ColorPickerControl',
+                            label: t('Subtitle Color'),
+                            default: { r: 15, g: 47, b: 87, a: 1 },
+                            renderTrigger: true,
+                        },
+                    },
+                ],
                 [<ControlSubSectionHeader>{t('Ticks & Axis')}</ControlSubSectionHeader>],
                 [
                     {
