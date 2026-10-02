@@ -387,6 +387,14 @@ with app.app_context():
             "secondaryFontSize": 13,
             "secondaryColor": "#2B6CB0",
             "secondary_color": "#2B6CB0",
+            "secondaryAlign": "right",
+            "secondary_align": "right",
+            "secondaryTextAlign": "left",
+            "secondary_text_align": "left",
+            "keyWidth": 90,
+            "key_width": 90,
+            "rowPadding": 6,
+            "row_padding": 6,
             "headerTitle": "Hot List",
             "header_title": "Hot List",
             "rowsPerItem": "2",
@@ -540,6 +548,8 @@ with app.app_context():
             "keyFontSize": 28,
             "keyFontWeight": 800,
             "displayValueFontSize": 26,
+            "rowPadding": 6,
+            "row_padding": 6,
             "row_limit": 10,
         }
     )

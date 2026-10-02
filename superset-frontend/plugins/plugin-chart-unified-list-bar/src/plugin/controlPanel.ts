@@ -157,6 +157,64 @@ const config: ControlPanelConfig = {
                 ],
                 [
                     {
+                        name: 'secondary_align',
+                        config: {
+                            type: 'SelectControl',
+                            label: t('Secondary Items Alignment'),
+                            description: t('Align secondary items to the left or right side of the row'),
+                            default: 'left',
+                            choices: [
+                                ['left', 'Left'],
+                                ['right', 'Right'],
+                            ],
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'secondary_text_align',
+                        config: {
+                            type: 'SelectControl',
+                            label: t('Secondary Text Alignment'),
+                            description: t('Text alignment inside secondary columns'),
+                            default: 'left',
+                            choices: [
+                                ['left', 'Left'],
+                                ['right', 'Right'],
+                            ],
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'key_width',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Key Column Width (px)'),
+                            description: t('Minimum width for the key column on the left (default: 90px)'),
+                            default: 90,
+                            renderTrigger: true,
+                            isInt: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'row_padding',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Row Vertical Spacing (px)'),
+                            description: t('Vertical padding per row to adjust spacing (default: 4px)'),
+                            default: 4,
+                            renderTrigger: true,
+                            isInt: true,
+                        },
+                    },
+                ],
+                [
+                    {
                         name: 'show_bar',
                         config: {
                             type: 'CheckboxControl',

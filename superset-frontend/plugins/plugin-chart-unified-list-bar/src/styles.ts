@@ -56,20 +56,20 @@ export const Styles = styled.div<{ height: number; width: number }>`
     fallbackTheme.typography.families.sansSerif};
 `;
 
-export const RowContainer = styled.div<{ rowsPerItem: '1' | '2' }>`
+export const RowContainer = styled.div<{ rowsPerItem: '1' | '2'; rowPadding?: number }>`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 4px 0;
+  padding: ${({ rowPadding = 4 }) => rowPadding}px 0;
   border-bottom: none;
 `;
 
 // Left section: Key Column + Sub Text
-export const KeySection = styled.div`
+export const KeySection = styled.div<{ minWidth?: number }>`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  min-width: 90px;
+  min-width: ${({ minWidth = 90 }) => minWidth}px;
   padding-right: 12px;
 `;
 
@@ -100,13 +100,24 @@ export const ContentSection = styled.div`
   min-width: 0;
 `;
 
-export const SecondaryFieldsContainer = styled.div`
+export const SecondaryFieldsContainer = styled.div<{
+  align?: 'left' | 'right';
+  textAlign?: 'left' | 'right';
+}>`
   display: flex;
   flex-direction: column;
   gap: 1px;
+  margin-left: ${({ align }) => (align === 'right' ? 'auto' : '0')};
+  align-items: ${({ align }) => (align === 'right' ? 'flex-end' : 'flex-start')};
+  text-align: ${({ textAlign, align }) =>
+    textAlign || (align === 'right' ? 'right' : 'left')};
 `;
 
-export const SecondaryField = styled.div<{ fontSize: number; color?: string }>`
+export const SecondaryField = styled.div<{
+  fontSize: number;
+  color?: string;
+  textAlign?: 'left' | 'right';
+}>`
   font-size: ${({ fontSize }) => fontSize}px;
   color: ${({ color, theme }) =>
     color ||
@@ -114,6 +125,7 @@ export const SecondaryField = styled.div<{ fontSize: number; color?: string }>`
     fallbackTheme.colors.grayscale.base};
   font-weight: 700;
   white-space: nowrap;
+  text-align: ${({ textAlign }) => textAlign || 'inherit'};
 `;
 
 // Bar section: below secondary columns

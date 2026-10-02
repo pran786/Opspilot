@@ -73,6 +73,10 @@ export default function transformProps(
     displayValueColumn,
     rowsPerItem = '2',
     alignMetric = 'right',
+    secondaryAlign,
+    secondaryTextAlign,
+    keyWidth,
+    rowPadding,
     showBar = true,
     showMetricValue = true,
     keyFontSize = 16,
@@ -124,6 +128,15 @@ export default function transformProps(
     displayValueColumn || (formData as any).display_value_column,
   );
 
+  const effectiveSecondaryAlign =
+    secondaryAlign || (formData as any).secondary_align || 'left';
+  const effectiveSecondaryTextAlign =
+    secondaryTextAlign || (formData as any).secondary_text_align || effectiveSecondaryAlign;
+  const effectiveKeyWidth =
+    Number(keyWidth || (formData as any).key_width) || 90;
+  const effectiveRowPadding =
+    Number(rowPadding !== undefined ? rowPadding : (formData as any).row_padding) ?? 4;
+
   const customize: UnifiedListBarChartCustomizeProps = {
     keyColumn: keyColumnName,
     keySubColumn: keySubColumnName || undefined,
@@ -135,6 +148,10 @@ export default function transformProps(
     displayValueColumn: displayValueColumnName || undefined,
     rowsPerItem: rowsPerItem,
     alignMetric: alignMetric,
+    secondaryAlign: effectiveSecondaryAlign as 'left' | 'right',
+    secondaryTextAlign: effectiveSecondaryTextAlign as 'left' | 'right',
+    keyWidth: effectiveKeyWidth,
+    rowPadding: Number.isFinite(effectiveRowPadding) ? effectiveRowPadding : 4,
     showBar: showBar,
     showMetricValue: showMetricValue,
     keyFontSize: Number(keyFontSize) || 16,

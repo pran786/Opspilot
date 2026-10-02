@@ -36,6 +36,10 @@ export interface UnifiedListBarChartCustomizeProps {
   displayValueColumn?: string;
   rowsPerItem: '1' | '2';
   alignMetric: 'left' | 'right';
+  secondaryAlign?: 'left' | 'right';
+  secondaryTextAlign?: 'left' | 'right';
+  keyWidth?: number;
+  rowPadding?: number;
   showBar: boolean;
   showMetricValue: boolean;
   keyFontSize: number;

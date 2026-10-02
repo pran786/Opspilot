@@ -99,6 +99,10 @@ export const Row: React.FC<RowProps> = ({
     secondaryFontSize,
     displayValueFontSize,
     barColorPositive,
+    secondaryAlign = 'left',
+    secondaryTextAlign,
+    keyWidth = 90,
+    rowPadding = 4,
   } = customize || {};
 
   let effectiveKeyColumn = keyColumn;
@@ -149,6 +153,7 @@ export const Row: React.FC<RowProps> = ({
     return (
       <RowContainer
         rowsPerItem={rowsPerItem}
+        rowPadding={rowPadding}
         style={{ border: '1px solid red', backgroundColor: '#fff0f0' }}
       >
         <div
@@ -181,9 +186,9 @@ export const Row: React.FC<RowProps> = ({
   const hasBarData = metricColumn && showBar;
 
   return (
-    <RowContainer rowsPerItem={rowsPerItem}>
+    <RowContainer rowsPerItem={rowsPerItem} rowPadding={rowPadding}>
       {/* Left: Key Column with optional sub-text */}
-      <KeySection>
+      <KeySection minWidth={keyWidth}>
         <KeyField fontSize={keyFontSize} color={effectiveKeyColor}>
           {safeHtmlSpan(String(keyValue))}
         </KeyField>
@@ -199,7 +204,7 @@ export const Row: React.FC<RowProps> = ({
 
       {/* Right: Content Section containing secondary info, value, and bar */}
       <ContentSection>
-        {/* Horizontal row for secondary fields (left) and display value (right) */}
+        {/* Horizontal row for secondary fields (left/right) and display value (right) */}
         <div
           style={{
             display: 'flex',
@@ -208,12 +213,16 @@ export const Row: React.FC<RowProps> = ({
             width: '100%',
           }}
         >
-          <SecondaryFieldsContainer>
+          <SecondaryFieldsContainer
+            align={secondaryAlign}
+            textAlign={secondaryTextAlign}
+          >
             {effectiveSecondaryColumns.map(col => (
               <SecondaryField
                 key={col}
                 fontSize={secondaryFontSize}
                 color={customize?.secondaryColor || '#2B6CB0'}
+                textAlign={secondaryTextAlign}
               >
                 {safeHtmlSpan(String(record[col]))}
               </SecondaryField>
