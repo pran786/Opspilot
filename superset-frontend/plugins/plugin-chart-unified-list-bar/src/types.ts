@@ -51,9 +51,12 @@ export interface UnifiedListBarChartCustomizeProps {
   displayValueFontSize: number;
   displayValueColor?: string;
   headerTitle?: string;
+  headerTitleFontSize?: number;
+  headerTitleColor?: string;
   headerSubtitle?: string;
   headerSubtitleColor?: string;
   headerBadge?: string;
+  headerBadgeFontSize?: number;
   headerBadgeColor?: string;
   barColorPositive: string;
   barColorNegative: string;

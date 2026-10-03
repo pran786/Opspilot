@@ -35,8 +35,8 @@ import { UnifiedListBarChartCustomizeProps } from '../types';
 /// Built-in severity icon mapping (0=none, 1=warning, 2=error, 3=critical)
 const AlertTriangleSvg = () => (
   <svg
-    width="22"
-    height="22"
+    width="26"
+    height="26"
     viewBox="0 0 24 24"
     style={{ display: 'inline-block', verticalAlign: 'middle' }}
   >
@@ -236,7 +236,7 @@ export const Row: React.FC<RowProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                marginLeft: '16px',
+                marginLeft: 'auto',
                 textAlign: 'right',
               }}
             >
@@ -255,7 +255,7 @@ export const Row: React.FC<RowProps> = ({
                 <span
                   style={{
                     fontSize: `${displayValueFontSize}px`,
-                    fontWeight: 'bold',
+                    fontWeight: 800,
                     color: customize?.displayValueColor || '#2B6CB0',
                   }}
                 >

@@ -87,6 +87,7 @@ export const KeySubField = styled.div<{ fontSize: number; color?: string }>`
     color ||
     getTheme(theme)?.colors?.grayscale?.base ||
     fallbackTheme.colors.grayscale.base};
+  font-weight: 700;
   margin-top: 2px;
   white-space: nowrap;
 `;
@@ -136,9 +137,9 @@ export const BarSection = styled.div`
 
 export const BarContainer = styled.div`
   width: 100%;
-  height: 8px;
+  height: 10px;
   background-color: #ece8de;
-  border-radius: 4px;
+  border-radius: 5px;
   overflow: hidden;
 `;
 

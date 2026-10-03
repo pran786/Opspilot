@@ -74,9 +74,12 @@ function UnifiedListBarChartContent(props: UnifiedListBarChartProps) {
     metricColumn,
     maxMetricColumn,
     headerTitle,
+    headerTitleFontSize = 26,
+    headerTitleColor = '#8E9AA8',
     headerSubtitle,
     headerSubtitleColor = '#2B6CB0',
     headerBadge,
+    headerBadgeFontSize = 30,
     headerBadgeColor = '#DC2626',
   } = customize || {};
 
@@ -95,9 +98,9 @@ function UnifiedListBarChartContent(props: UnifiedListBarChartProps) {
             <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
               <span
                 style={{
-                  fontSize: 22,
-                  fontWeight: 700,
-                  color: '#9CA3AF',
+                  fontSize: headerTitleFontSize,
+                  fontWeight: 800,
+                  color: headerTitleColor,
                   letterSpacing: '-0.3px',
                 }}
               >
@@ -106,7 +109,7 @@ function UnifiedListBarChartContent(props: UnifiedListBarChartProps) {
               {headerBadge && (
                 <span
                   style={{
-                    fontSize: 24,
+                    fontSize: headerBadgeFontSize,
                     fontWeight: 800,
                     color: headerBadgeColor,
                   }}
@@ -158,9 +161,9 @@ function UnifiedListBarChartContent(props: UnifiedListBarChartProps) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <span
               style={{
-                fontSize: 22,
-                fontWeight: 700,
-                color: '#9CA3AF',
+                fontSize: headerTitleFontSize,
+                fontWeight: 800,
+                color: headerTitleColor,
                 letterSpacing: '-0.3px',
               }}
             >
@@ -169,7 +172,7 @@ function UnifiedListBarChartContent(props: UnifiedListBarChartProps) {
             {headerBadge && (
               <span
                 style={{
-                  fontSize: 24,
+                  fontSize: headerBadgeFontSize,
                   fontWeight: 800,
                   color: headerBadgeColor,
                 }}

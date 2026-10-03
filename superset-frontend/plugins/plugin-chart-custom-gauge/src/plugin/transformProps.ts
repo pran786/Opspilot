@@ -226,10 +226,6 @@ export default function transformProps(
     effectiveValSuffix;
   const axisTickLength = FONT_SIZE_MULTIPLIERS.axisTickLength * fontSize;
   const splitLineLength = FONT_SIZE_MULTIPLIERS.splitLineLength * fontSize;
-  const titleOffsetFromTitle =
-    FONT_SIZE_MULTIPLIERS.titleOffsetFromTitle * fontSize;
-  const detailOffsetFromTitle =
-    FONT_SIZE_MULTIPLIERS.detailOffsetFromTitle * fontSize;
   const columnsLabelMap = new Map<string, string[]>();
   const metricLabel = getMetricLabel(metric as QueryFormMetric);
 

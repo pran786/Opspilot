@@ -107,7 +107,8 @@ export const TitleBlock = styled.div`
 
 export const TitleText = styled.span`
     font-size: 15px;
-    font-weight: 600;
+    font-weight: 800;
+    letter-spacing: -0.3px;
     line-height: 1.3;
 `;
 
@@ -120,7 +121,7 @@ export const SubtitleText = styled.span`
 
 export const ClockDisplay = styled.span`
     font-size: 16px;
-    font-weight: 600;
+    font-weight: 800;
     font-variant-numeric: tabular-nums;
     flex-shrink: 0;
     line-height: 1.2;
@@ -128,8 +129,8 @@ export const ClockDisplay = styled.span`
 
 export const DateDisplay = styled.span`
     font-size: 11px;
-    font-weight: 400;
-    opacity: 0.8;
+    font-weight: 600;
+    opacity: 0.95;
     line-height: 1.2;
     text-align: right;
 `;

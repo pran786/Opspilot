@@ -51,7 +51,7 @@ const HeaderRow = styled.div`
 `;
 
 const SectionTitle = styled.div`
-  font-size: 22px;
+  font-size: 24px;
   font-weight: 700;
   color: #9ca3af;
   letter-spacing: -0.3px;
@@ -61,7 +61,7 @@ const LoadingRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
+  padding: 12px 0;
   border-bottom: 1px solid #f3f4f6;
   &:last-child {
     border-bottom: none;
@@ -71,16 +71,16 @@ const LoadingRow = styled.div`
 const MaterialInfo = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 1px;
-  min-width: 170px;
+  gap: 2px;
+  min-width: 190px;
 `;
 
 const SubLabel = styled.div<{ color?: string }>`
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   color: ${props => props.color || '#9ca3af'};
   letter-spacing: 0.5px;
-  min-height: 14px;
+  min-height: 16px;
 `;
 
 const WorkOrderId = styled.div<{ fontSize: number }>`
@@ -91,8 +91,8 @@ const WorkOrderId = styled.div<{ fontSize: number }>`
   line-height: 1.1;
 `;
 
-const MaterialName = styled.div`
-  font-size: 13px;
+const MaterialName = styled.div<{ fontSize?: number }>`
+  font-size: ${props => props.fontSize || 15}px;
   font-weight: 700;
   color: #2b6cb0;
   text-transform: uppercase;
@@ -110,15 +110,15 @@ const FlowCenter = styled.div`
 const StatusPipeline = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2.5px;
+  gap: 3px;
 `;
 
 const ChevronBadge = styled.div<{ bg: string; active?: boolean }>`
   background-color: ${props => props.bg};
   color: #ffffff;
-  font-size: 0.62em;
+  font-size: 0.72em;
   font-weight: 800;
-  padding: 2px 12px;
+  padding: 3px 14px;
   clip-path: polygon(0% 0%, 88% 0%, 100% 50%, 88% 100%, 0% 100%);
   text-align: left;
   letter-spacing: 0.5px;
@@ -128,8 +128,8 @@ const ChevronBadge = styled.div<{ bg: string; active?: boolean }>`
 `;
 
 const HorizontalArrow = styled.div`
-  width: 100px;
-  height: 22px;
+  width: 120px;
+  height: 26px;
   background-color: #eee9dc;
   clip-path: polygon(
     0% 30%,
@@ -146,7 +146,7 @@ const DestinationBlock = styled.div`
   display: flex;
   align-items: flex-end;
   gap: 28px;
-  min-width: 140px;
+  min-width: 160px;
   justify-content: flex-end;
 `;
 
@@ -154,18 +154,18 @@ const SubCol = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 50px;
+  min-width: 60px;
 `;
 
-const TankBadge = styled.div<{ color: string }>`
-  font-size: 26px;
+const TankBadge = styled.div<{ color: string; fontSize?: number }>`
+  font-size: ${props => props.fontSize || 32}px;
   font-weight: 800;
   color: ${props => props.color};
   line-height: 1.1;
 `;
 
-const TimerText = styled.div<{ color: string }>`
-  font-size: 26px;
+const TimerText = styled.div<{ color: string; fontSize?: number }>`
+  font-size: ${props => props.fontSize || 32}px;
   font-weight: 800;
   color: ${props => props.color};
   line-height: 1.1;
@@ -265,7 +265,7 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
       <HeaderRow>
         <SectionTitle>{titleText}</SectionTitle>
         {c.showTruckGraphic !== false && (
-          <TankerTruckSvg width={180} height={56} />
+          <TankerTruckSvg width={230} height={72} />
         )}
       </HeaderRow>
       {data.map((record, index) => {
@@ -300,10 +300,16 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
               <SubLabel color={index === 0 ? '#EAB308' : '#94A3B8'}>
                 {record?.order_label || (index === 0 ? 'Dfwlyh' : 'Xsfrp lqj')}
               </SubLabel>
-              <WorkOrderId fontSize={c.workOrderFontSize || 26}>
+              <WorkOrderId fontSize={c.workOrderFontSize || 34}>
                 {workOrder}
               </WorkOrderId>
-              {materialName && <MaterialName>{materialName}</MaterialName>}
+              {materialName && (
+                <MaterialName
+                  fontSize={Math.round((c.workOrderFontSize || 34) * 0.45)}
+                >
+                  {materialName}
+                </MaterialName>
+              )}
             </MaterialInfo>
 
             <FlowCenter>
@@ -344,7 +350,10 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
                 <SubLabel>
                   {record?.tank_label || (index === 0 ? 'Wdqn' : '')}
                 </SubLabel>
-                <TankBadge color={c.tankBadgeColor || '#0F2F57'}>
+                <TankBadge
+                  color={c.tankBadgeColor || '#0F2F57'}
+                  fontSize={c.workOrderFontSize || 32}
+                >
                   {destinationTank}
                 </TankBadge>
               </SubCol>
@@ -353,11 +362,14 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
                   {record?.timer_label || (index === 0 ? 'Wlp h#lq#Ed|' : '')}
                 </SubLabel>
                 {elapsedTime ? (
-                  <TimerText color={c.timerColor || '#0F2F57'}>
+                  <TimerText
+                    color={c.timerColor || '#0F2F57'}
+                    fontSize={c.workOrderFontSize || 32}
+                  >
                     {elapsedTime}
                   </TimerText>
                 ) : (
-                  <div style={{ minHeight: 26 }} />
+                  <div style={{ minHeight: 32 }} />
                 )}
               </SubCol>
             </DestinationBlock>

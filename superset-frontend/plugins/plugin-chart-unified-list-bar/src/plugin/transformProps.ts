@@ -176,6 +176,16 @@ export default function transformProps(
       (formData as any).headerTitle ||
       (formData as any).header_title ||
       undefined,
+    headerTitleFontSize:
+      Number(
+        (formData as any).headerTitleFontSize ||
+          (formData as any).header_title_font_size,
+      ) || undefined,
+    headerTitleColor:
+      rgbaToString(
+        (formData as any).headerTitleColor ||
+          (formData as any).header_title_color,
+      ) || undefined,
     headerSubtitle:
       (formData as any).headerSubtitle ||
       (formData as any).header_subtitle ||
@@ -189,6 +199,11 @@ export default function transformProps(
       (formData as any).headerBadge ||
       (formData as any).header_badge ||
       undefined,
+    headerBadgeFontSize:
+      Number(
+        (formData as any).headerBadgeFontSize ||
+          (formData as any).header_badge_font_size,
+      ) || undefined,
     headerBadgeColor:
       rgbaToString(
         (formData as any).headerBadgeColor ||

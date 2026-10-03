@@ -506,7 +506,9 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
   const renderHeader = () => {
     const iconEl = renderIcon();
     const title = customize.titleText;
-    if (!iconEl && !title) return null;
+    const valueHeader =
+      (customize as any).valueHeader || (customize as any).value_header;
+    if (!iconEl && !title && !valueHeader) return null;
 
     const isCentered = headerMode === 'icon_centered' && !title;
 
@@ -521,6 +523,19 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
           </CardTitle>
         )}
         {iconEl}
+        {valueHeader && (
+          <div
+            style={{
+              marginLeft: 'auto',
+              fontSize: 13,
+              fontWeight: 700,
+              color: '#6B7280',
+              letterSpacing: '0.5px',
+            }}
+          >
+            {valueHeader}
+          </div>
+        )}
       </CardHeader>
     );
   };
