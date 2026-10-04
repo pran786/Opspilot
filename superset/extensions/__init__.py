@@ -126,7 +126,7 @@ class ProfilingExtension:  # pylint: disable=too-few-public-methods
         app.wsgi_app = SupersetProfiler(app.wsgi_app, self.interval)
 
 
-APP_DIR = os.path.join(os.path.dirname(__file__), os.path.pardir)
+APP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), os.path.pardir))
 appbuilder = AppBuilder(update_perms=False)
 async_query_manager_factory = AsyncQueryManagerFactory()
 async_query_manager: AsyncQueryManager = LocalProxy(

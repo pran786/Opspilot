@@ -45,7 +45,7 @@ if [ "$CYPRESS_CONFIG" == "true" ]; then
 fi
 # Initialize the database
 echo_step "1" "Starting" "Applying DB migrations"
-superset db upgrade
+superset db upgrade -d /app/superset/migrations
 echo_step "1" "Complete" "Applying DB migrations"
 
 # Create an admin user
