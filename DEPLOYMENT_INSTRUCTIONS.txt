@@ -1,46 +1,75 @@
 ================================================================================
-                    OPSPILOT - QUICK DEPLOYMENT CHEATSHEET
+                    OPSPILOT - QUICK DEPLOYMENT & SYNC CHEATSHEET
 ================================================================================
 
-PREREQUISITES:
-1. Docker Desktop (Windows/macOS) or Docker Engine + Docker Compose (Linux)
-2. Git
+For the complete, detailed deployment manual and upstream sync guide, see:
+   DEPLOYMENT_GUIDE.md
 
 --------------------------------------------------------------------------------
-STEP-BY-STEP COMMANDS TO DEPLOY ON A NEW MACHINE:
+1. FIRST-TIME DEPLOYMENT ON A NEW SERVER:
 --------------------------------------------------------------------------------
 
-1. CLONE THE REPOSITORY:
-   git clone https://github.com/pran786/eenera-llc-superset.git
-   cd eenera-llc-superset
+   # Clone repository & checkout branch
+   git clone https://github.com/pran786/Opspilot.git
+   cd Opspilot
    git checkout feature/custom-theme
 
-2. START ALL BACKEND SERVICES (Postgres, Redis, Superset, Nginx):
-   docker compose -f docker-compose-runtime.yml up -d
+   # Build & start containers (Fast mode)
+   docker compose -f docker-compose-fast.yml up -d --build
 
-3. INITIALIZE DATABASE & CREATE ADMIN USER (First time only):
-   docker compose -f docker-compose-runtime.yml exec superset superset db upgrade
-   docker compose -f docker-compose-runtime.yml exec superset superset fab create-admin --username admin --firstname Admin --lastname User --email admin@opspilot.local --password admin
-   docker compose -f docker-compose-runtime.yml exec superset superset init
+   # Run DB migration & initialize admin user
+   docker compose -f docker-compose-fast.yml exec superset superset db upgrade
+   docker compose -f docker-compose-fast.yml exec superset superset fab create-admin --username admin --firstname Superset --lastname Admin --email admin@opspilot.com --password admin
+   docker compose -f docker-compose-fast.yml exec superset superset init
 
-4. ACCESS THE APPLICATION:
-   - Web App (Nginx Port 80):     http://localhost/opspilot/welcome/
-   - Backend Direct (Port 8088):  http://localhost:8088/opspilot/welcome/
-   - Login Credentials:           admin / admin
+   # Seed all 4 OpsPilot Big-Screen TV Dashboards
+   docker compose -f docker-compose-fast.yml exec superset python scripts/seed_all_opspilot_dashboards.py
 
---------------------------------------------------------------------------------
-OPTIONAL: LOCAL FRONTEND DEVELOPMENT (HOT-RELOAD):
---------------------------------------------------------------------------------
-   cd superset-frontend
-   npm install --legacy-peer-deps
-   npm run dev-server
-   - Dev Server URL:              http://localhost:9000/opspilot/welcome/
+   # Access application:
+   - Web App (Nginx Port 80):    http://<SERVER_IP>/opspilot/welcome/
+   - Direct Port 8088:           http://<SERVER_IP>:8088/opspilot/welcome/
+   - Login:                      admin / admin
 
 --------------------------------------------------------------------------------
-HELPFUL MANAGEMENT COMMANDS:
+2. PULLING LATEST OPSPILOT UPDATES (ON SERVER):
 --------------------------------------------------------------------------------
-   - View Container Status:       docker compose -f docker-compose-runtime.yml ps
-   - View Logs:                   docker compose -f docker-compose-runtime.yml logs -f
-   - Restart Backend:             docker compose -f docker-compose-runtime.yml restart superset
-   - Stop Everything:             docker compose -f docker-compose-runtime.yml down
+
+   cd Opspilot
+   git pull origin feature/custom-theme
+   docker compose -f docker-compose-fast.yml up -d --build
+   docker compose -f docker-compose-fast.yml exec superset superset db upgrade
+   docker compose -f docker-compose-fast.yml exec superset python scripts/seed_all_opspilot_dashboards.py
+
+--------------------------------------------------------------------------------
+3. SYNCING WITH UPSTREAM APACHE SUPERSET (CODEBASE MAINTENANCE):
+--------------------------------------------------------------------------------
+
+   # One-time upstream setup:
+   git remote add upstream https://github.com/apache/superset.git
+
+   # Sync workflow:
+   git fetch upstream master
+   git checkout feature/custom-theme
+   git checkout -b sync/upstream-sync
+   git merge upstream/master
+
+   # (Resolve conflicts if any, preserving custom plugins in superset-frontend/plugins/
+   # and custom scripts in scripts/)
+
+   # Build and verify containers:
+   docker compose -f docker-compose-fast.yml up -d --build
+
+   # Merge to custom-theme and push:
+   git checkout feature/custom-theme
+   git merge sync/upstream-sync
+   git push origin feature/custom-theme
+
+--------------------------------------------------------------------------------
+4. USEFUL OPS COMMANDS:
+--------------------------------------------------------------------------------
+   - View container status:    docker compose -f docker-compose-fast.yml ps
+   - View live logs:           docker compose -f docker-compose-fast.yml logs -f
+   - Restart superset:         docker compose -f docker-compose-fast.yml restart superset
+   - Reset admin password:     docker compose -f docker-compose-fast.yml exec superset superset fab reset-password --username admin --password admin
+   - Stop services:            docker compose -f docker-compose-fast.yml down
 ================================================================================
