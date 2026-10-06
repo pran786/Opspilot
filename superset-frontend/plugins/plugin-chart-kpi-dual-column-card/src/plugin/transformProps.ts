@@ -78,6 +78,24 @@ export default function transformProps(
   const uploadedIcon = String(
     getProp('uploaded_icon', 'uploadedIcon', '') || '',
   );
+  const forkliftImage = String(
+    getProp('forklift_image', 'forkliftImage', '') || '',
+  );
+  const forkliftImageUrl = String(
+    getProp('forklift_image_url', 'forkliftImageUrl', '') || '',
+  );
+  const blowerImage = String(getProp('blower_image', 'blowerImage', '') || '');
+  const blowerImageUrl = String(
+    getProp('blower_image_url', 'blowerImageUrl', '') || '',
+  );
+  const hardhatImage = String(
+    getProp('hardhat_image', 'hardhatImage', '') || '',
+  );
+  const hardhatImageUrl = String(
+    getProp('hardhat_image_url', 'hardhatImageUrl', '') || '',
+  );
+  const imageColumn =
+    getColumnName(getProp('image_column', 'imageColumn')) || undefined;
   const iconSize = Number(getProp('icon_size', 'iconSize', 32)) || 32;
   const iconColor = String(
     getProp('icon_color', 'iconColor', '#333333') || '#333333',
@@ -133,6 +151,13 @@ export default function transformProps(
     titleColor,
     svgUrl,
     uploadedIcon,
+    forkliftImage,
+    forkliftImageUrl,
+    blowerImage,
+    blowerImageUrl,
+    hardhatImage,
+    hardhatImageUrl,
+    imageColumn,
     iconSize,
     iconColor,
     iconSpacing,

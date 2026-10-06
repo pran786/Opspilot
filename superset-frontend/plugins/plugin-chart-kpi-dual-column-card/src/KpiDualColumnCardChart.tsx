@@ -381,11 +381,18 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
     valBoxColorColumn,
     valTextColorColumn,
     groupColumn,
+    imageColumn,
     headerMode,
     iconType,
     iconName,
     svgUrl,
     uploadedIcon,
+    forkliftImage,
+    forkliftImageUrl,
+    blowerImage,
+    blowerImageUrl,
+    hardhatImage,
+    hardhatImageUrl,
     iconSize,
     iconColor,
     iconSpacing,
@@ -446,8 +453,32 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
 
     let iconElement: React.ReactNode = null;
 
+    if (imageColumn && data && data.length > 0 && data[0][imageColumn]) {
+      const rowImage = String(data[0][imageColumn]);
+      if (rowImage) {
+        return (
+          <img
+            src={rowImage}
+            alt="icon"
+            width={iconSize || 48}
+            height={iconSize ? Math.round(iconSize * 0.75) : 40}
+            style={{ objectFit: 'contain' }}
+          />
+        );
+      }
+    }
+
     if (iconType === 'hardhat' || iconName === 'hardhat') {
-      iconElement = (
+      const customSrc = hardhatImage || hardhatImageUrl;
+      iconElement = customSrc ? (
+        <img
+          src={customSrc}
+          alt="hardhat"
+          width={iconSize || 32}
+          height={iconSize || 32}
+          style={{ objectFit: 'contain' }}
+        />
+      ) : (
         <HardHatSvg
           width={iconSize || 32}
           height={iconSize || 32}
@@ -455,7 +486,16 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
         />
       );
     } else if (iconType === 'forklift' || iconName === 'forklift') {
-      iconElement = (
+      const customSrc = forkliftImage || forkliftImageUrl;
+      iconElement = customSrc ? (
+        <img
+          src={customSrc}
+          alt="forklift"
+          width={iconSize || 64}
+          height={iconSize ? Math.round(iconSize * 0.75) : 48}
+          style={{ objectFit: 'contain' }}
+        />
+      ) : (
         <ForkliftSvg
           width={iconSize || 64}
           height={iconSize || 48}
@@ -463,7 +503,16 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
         />
       );
     } else if (iconType === 'blower' || iconName === 'blower') {
-      iconElement = (
+      const customSrc = blowerImage || blowerImageUrl;
+      iconElement = customSrc ? (
+        <img
+          src={customSrc}
+          alt="blower"
+          width={iconSize || 56}
+          height={iconSize ? Math.round(iconSize * 0.75) : 48}
+          style={{ objectFit: 'contain' }}
+        />
+      ) : (
         <BlowerFanSvg
           width={iconSize || 56}
           height={iconSize || 48}
@@ -557,10 +606,40 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
     }));
   }, [data, groupColumn]);
 
-  const renderGroupIcon = (groupKey: string) => {
+  const renderGroupIcon = (groupKey: string, records?: any[]) => {
+    // Check if the dataset row provides a custom image
+    if (
+      imageColumn &&
+      records &&
+      records.length > 0 &&
+      records[0][imageColumn]
+    ) {
+      const rowImage = String(records[0][imageColumn]);
+      if (rowImage) {
+        return (
+          <img
+            src={rowImage}
+            alt={groupKey}
+            width={iconSize || 48}
+            height={iconSize ? Math.round(iconSize * 0.75) : 40}
+            style={{ objectFit: 'contain' }}
+          />
+        );
+      }
+    }
+
     const k = groupKey.toLowerCase();
     if (k.includes('forklift')) {
-      return (
+      const customSrc = forkliftImage || forkliftImageUrl;
+      return customSrc ? (
+        <img
+          src={customSrc}
+          alt="forklift"
+          width={iconSize || 54}
+          height={iconSize ? Math.round(iconSize * 0.75) : 40}
+          style={{ objectFit: 'contain' }}
+        />
+      ) : (
         <ForkliftSvg
           width={iconSize || 54}
           height={iconSize ? Math.round(iconSize * 0.75) : 40}
@@ -569,7 +648,16 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
       );
     }
     if (k.includes('blower')) {
-      return (
+      const customSrc = blowerImage || blowerImageUrl;
+      return customSrc ? (
+        <img
+          src={customSrc}
+          alt="blower"
+          width={iconSize || 48}
+          height={iconSize ? Math.round(iconSize * 0.75) : 40}
+          style={{ objectFit: 'contain' }}
+        />
+      ) : (
         <BlowerFanSvg
           width={iconSize || 48}
           height={iconSize ? Math.round(iconSize * 0.75) : 40}
@@ -578,7 +666,16 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
       );
     }
     if (k.includes('hardhat')) {
-      return (
+      const customSrc = hardhatImage || hardhatImageUrl;
+      return customSrc ? (
+        <img
+          src={customSrc}
+          alt="hardhat"
+          width={iconSize || 32}
+          height={iconSize || 32}
+          style={{ objectFit: 'contain' }}
+        />
+      ) : (
         <HardHatSvg
           width={iconSize || 32}
           height={iconSize || 32}
@@ -638,7 +735,7 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
                 marginBottom: iconSpacing || 8,
               }}
             >
-              {renderGroupIcon(group.groupKey)}
+              {renderGroupIcon(group.groupKey, group.records)}
             </div>
           )}
           {group.records.map((record, index) => {

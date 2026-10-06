@@ -688,7 +688,7 @@ with app.app_context():
                 "sliceName": slice_header.slice_name,
                 "uuid": str(slice_header.uuid),
                 "width": 24,
-                "height": 14
+                "height": 7
             }
         },
         # Main Body Row containing 3 columns: Left (10), Middle (10), Right Sidebar (4)
@@ -840,11 +840,41 @@ with app.app_context():
   background: transparent !important;
 }
 
-/* Header utility bar: full bleed flush at top */
-.grid-row:first-child {
+/* Header utility bar: full bleed flush at top, eliminate white space below */
+.grid-content > div:first-child,
+.grid-content > div:first-child > .dragdroppable,
+.grid-content > div:first-child > .dragdroppable-row,
+.grid-row:first-child,
+div[data-test="grid-row-BACKGROUND_TRANSPARENT"]:first-child {
   margin: 0 !important;
+  margin-bottom: 0 !important;
   padding: 0 !important;
   width: 100% !important;
+}
+
+.grid-content > div:first-child .dragdroppable-column,
+.grid-row:first-child .dragdroppable-column {
+  margin: 0 !important;
+  padding: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+.grid-row:first-child .dashboard-component-chart-holder,
+.grid-row:first-child .slice_container,
+.grid-row:first-child .resizable-container {
+  padding: 0 !important;
+  margin: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Remove gap between header row and body row so sidebar connects seamlessly */
+.grid-content > div:first-child {
+  margin-bottom: 0 !important;
+}
+.grid-content > div:nth-child(2),
+.grid-row:nth-child(2) {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 /* Slices title styling: completely hide default Superset chart header controls */
@@ -854,12 +884,12 @@ with app.app_context():
   display: none !important;
 }
 
-/* Right sidebar column styling */
+/* Right sidebar column styling: flush attached to header */
 .grid-row > .dragdroppable-column:last-child:not(:only-child) {
   background-color: #ece8de !important;
   border-left: 1px solid #ded8cb !important;
   padding: 8px 10px !important;
-  min-height: calc(100vh - 75px) !important;
+  min-height: calc(100vh - 55px) !important;
 }
 
 .grid-row > .dragdroppable-column:last-child:not(:only-child) .dashboard-component-chart-holder {

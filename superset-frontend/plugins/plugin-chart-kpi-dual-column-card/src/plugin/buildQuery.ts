@@ -48,6 +48,7 @@ export default function buildQuery(formData: QueryFormData) {
   const val_text_color_column =
     formData.val_text_color_column || (formData as any).valTextColorColumn;
   const group_column = formData.group_column || (formData as any).groupColumn;
+  const image_column = formData.image_column || (formData as any).imageColumn;
 
   const formDataCopy = {
     ...formData,
@@ -62,6 +63,7 @@ export default function buildQuery(formData: QueryFormData) {
       ...ensureIsArray(val_box_color_column),
       ...ensureIsArray(val_text_color_column),
       ...ensureIsArray(group_column),
+      ...ensureIsArray(image_column),
     ]).filter(Boolean);
 
     const columns = rawColumns.map(col => ensureColumnLabel(col));

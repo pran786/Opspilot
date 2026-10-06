@@ -39,8 +39,9 @@ export interface KpiDualColumnCardCustomizeProps {
   valBoxColorColumn?: string;
   valTextColorColumn?: string;
   groupColumn?: string;
+  imageColumn?: string;
 
-  // Header / Icon
+  // Header / Icon / Custom Images
   headerMode: HeaderMode;
   iconType: IconType;
   iconName: string;
@@ -49,6 +50,12 @@ export interface KpiDualColumnCardCustomizeProps {
   titleColor?: string;
   svgUrl: string;
   uploadedIcon: string;
+  forkliftImage?: string;
+  forkliftImageUrl?: string;
+  blowerImage?: string;
+  blowerImageUrl?: string;
+  hardhatImage?: string;
+  hardhatImageUrl?: string;
   iconSize: number;
   iconColor: string;
   iconSpacing: number;
