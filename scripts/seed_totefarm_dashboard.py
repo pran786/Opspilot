@@ -761,7 +761,7 @@ with app.app_context():
                 "sliceName": slice_header.slice_name,
                 "uuid": str(slice_header.uuid),
                 "width": 24,
-                "height": 7
+                "height": 12
             }
         },
         # Main Body Row containing 4 columns: Hot List (6), Dual Gauges (4), Upcoming Movements (10), Right Sidebar (4)
@@ -940,12 +940,47 @@ div[data-test="grid-row-BACKGROUND_TRANSPARENT"]:first-child {
   margin-bottom: 0 !important;
 }
 
+/* Uncrop utility bar and expand to 100% of row height */
 .grid-row:first-child .dashboard-component-chart-holder,
+.grid-row:first-child .chart-slice,
+.grid-row:first-child .dashboard-chart,
+.grid-row:first-child .chart-container,
 .grid-row:first-child .slice_container,
-.grid-row:first-child .resizable-container {
-  padding: 0 !important;
+.grid-row:first-child .slice_container > div,
+.grid-row:first-child .resizable-container,
+.grid-row:first-child .dashboard_utility_bar,
+.grid-row:first-child [class*="BarContainer"],
+[class*="BarContainer"] {
+  height: 100% !important;
+  min-height: 100% !important;
+  max-height: none !important;
   margin: 0 !important;
-  margin-bottom: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  top: 0 !important;
+  overflow: visible !important;
+  justify-content: flex-start !important;
+}
+
+/* Hide empty slice header wrappers on the utility bar */
+.grid-row:first-child [class*="superset-n4oo92"],
+.grid-row:first-child .header-title,
+.grid-row:first-child .chart-header,
+.grid-row:first-child .header-controls {
+  display: none !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* BarContainer vertical centering */
+.grid-row:first-child [class*="BarContainer"],
+[class*="BarContainer"] {
+  display: flex !important;
+  align-items: center !important;
+  padding-left: 16px !important;
+  padding-right: 16px !important;
+  border-radius: 0 !important;
 }
 
 /* Remove gap between header row and body row so sidebar connects seamlessly */
@@ -965,11 +1000,11 @@ div[data-test="grid-row-BACKGROUND_TRANSPARENT"]:first-child {
   display: none !important;
 }
 
-/* Right sidebar column styling: flush attached to header */
+/* Right sidebar column styling: flush attached to header (padding-top: 0) */
 .grid-row > .dragdroppable-column:last-child:not(:only-child) {
   background-color: #ece8de !important;
   border-left: 1px solid #ded8cb !important;
-  padding: 8px 10px !important;
+  padding: 0px 10px 8px 10px !important;
   min-height: calc(100vh - 55px) !important;
 }
 

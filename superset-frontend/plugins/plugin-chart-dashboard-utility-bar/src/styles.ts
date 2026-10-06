@@ -100,7 +100,7 @@ export const BarContainer = styled.div<BarContainerProps>`
   align-items: center;
   width: 100%;
   height: 100%;
-  padding: 8px 16px;
+  padding: 0 16px;
   gap: 16px;
   background: ${({ bgColor }) => bgColor};
   color: ${({ fgColor }) => fgColor};
