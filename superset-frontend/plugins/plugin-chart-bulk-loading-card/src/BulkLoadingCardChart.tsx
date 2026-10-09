@@ -107,24 +107,80 @@ const FlowCenter = styled.div`
   justify-content: center;
 `;
 
-const StatusPipeline = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-`;
+interface StatusBadgeInfo {
+  bg: string;
+  label: string;
+}
 
-const ChevronBadge = styled.div<{ bg: string; active?: boolean }>`
+const getStatusBadge = (rawStatus?: unknown): StatusBadgeInfo | null => {
+  if (rawStatus === null || rawStatus === undefined) return null;
+  const s = String(rawStatus).trim();
+  if (!s) return null;
+  const upper = s.toUpperCase();
+
+  // QC Approved / Approved / Done / Completed / Success / Pass / OK
+  if (
+    upper.includes('APPROV') ||
+    upper.includes('PASS') ||
+    upper.includes('OK') ||
+    upper.includes('COMPLET') ||
+    upper.includes('SUCCESS')
+  ) {
+    return { bg: '#10B981', label: upper };
+  }
+
+  // QC Rejected / Rejected / Failed
+  if (upper.includes('REJECT') || upper.includes('FAIL')) {
+    return { bg: '#DC2626', label: upper };
+  }
+
+  // Awaiting QC / Awaiting / Pending / Hold
+  if (
+    upper.includes('AWAIT') ||
+    upper.includes('HOLD') ||
+    upper.includes('PEND')
+  ) {
+    return { bg: '#DC2626', label: upper };
+  }
+
+  // Loading / In Progress / Active
+  if (
+    upper.includes('LOAD') ||
+    upper.includes('PROGRESS') ||
+    upper.includes('ACTIVE')
+  ) {
+    return { bg: '#F59E0B', label: upper };
+  }
+
+  // Upcoming / Scheduled / Queued
+  if (
+    upper.includes('UPCOMING') ||
+    upper.includes('SCHEDULE') ||
+    upper.includes('QUEUE')
+  ) {
+    return { bg: '#64748B', label: upper };
+  }
+
+  // Any other status option
+  return { bg: '#2563EB', label: upper };
+};
+
+const ChevronBadge = styled.div<{ bg: string }>`
   background-color: ${props => props.bg};
   color: #ffffff;
-  font-size: 0.72em;
+  font-size: 13px;
   font-weight: 800;
-  padding: 3px 14px;
+  padding: 6px 22px 6px 14px;
   clip-path: polygon(0% 0%, 88% 0%, 100% 50%, 88% 100%, 0% 100%);
-  text-align: left;
+  text-align: center;
   letter-spacing: 0.5px;
-  opacity: ${props => (props.active ? 1 : 0.85)};
-  box-shadow: ${props =>
-    props.active ? '0 1px 3px rgba(0,0,0,0.15)' : 'none'};
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 120px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  text-transform: uppercase;
 `;
 
 const HorizontalArrow = styled.div`
@@ -277,13 +333,11 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
           (c.materialNameColumn && record?.[c.materialNameColumn]) ||
           record?.material_name ||
           '';
-        const currentStatus = (
-          c.statusColumn && record?.[c.statusColumn]
-            ? String(record[c.statusColumn])
-            : record?.status
-              ? String(record.status)
-              : 'LOADING'
-        ).toUpperCase();
+        const rawStatus =
+          (c.statusColumn && record?.[c.statusColumn] !== undefined
+            ? record[c.statusColumn]
+            : record?.status) ?? '';
+        const statusBadge = getStatusBadge(rawStatus);
         const destinationTank =
           (c.destinationTankColumn && record?.[c.destinationTankColumn]) ||
           record?.destination_tank ||
@@ -292,7 +346,6 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
           (c.elapsedTimeColumn && record?.[c.elapsedTimeColumn]) ||
           record?.elapsed_time ||
           null;
-        const isPipeline = index === 0 || currentStatus.includes('LOAD');
 
         return (
           <LoadingRow key={String(workOrder) + index}>
@@ -313,36 +366,14 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
             </MaterialInfo>
 
             <FlowCenter>
-              {isPipeline ? (
-                <StatusPipeline>
-                  <ChevronBadge
-                    bg="#F59E0B"
-                    active={currentStatus.includes('LOAD')}
-                  >
-                    LOADING
+              {c.showStatusPipeline !== false &&
+                (statusBadge ? (
+                  <ChevronBadge bg={statusBadge.bg}>
+                    {statusBadge.label}
                   </ChevronBadge>
-                  <ChevronBadge
-                    bg="#DC2626"
-                    active={currentStatus.includes('AWAIT')}
-                  >
-                    AWAITING QC
-                  </ChevronBadge>
-                  <ChevronBadge
-                    bg="#10B981"
-                    active={currentStatus.includes('APPROV')}
-                  >
-                    QC APPROVED
-                  </ChevronBadge>
-                  <ChevronBadge
-                    bg="#DC2626"
-                    active={currentStatus.includes('REJECT')}
-                  >
-                    QC REJECTED
-                  </ChevronBadge>
-                </StatusPipeline>
-              ) : (
-                <HorizontalArrow />
-              )}
+                ) : (
+                  <HorizontalArrow />
+                ))}
             </FlowCenter>
 
             <DestinationBlock>
