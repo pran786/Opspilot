@@ -256,12 +256,21 @@ git pull origin feature/custom-theme
 # 3. Rebuild and restart the containers with updated code
 docker compose -f docker-compose-fast.yml up -d --build
 
-# 4. Run database migrations (in case new schema migrations were added)
+# 4. Restart Superset and Nginx to pick up updated static assets
+docker compose -f docker-compose-fast.yml restart superset nginx
+
+# 5. Run database migrations (in case new schema migrations were added)
 docker compose -f docker-compose-fast.yml exec -T superset superset db upgrade
 
-# 5. (Optional) Re-seed dashboards if queries or card designs were modified
+# 6. (Optional) Re-seed dashboards if queries or card designs were modified
 docker compose -f docker-compose-fast.yml exec -T superset python scripts/seed_all_opspilot_dashboards.py
 ```
+
+> **Important (Browser Cache / Service Worker):**  
+> Superset dashboards and custom chart chunk files (`.chunk.js`) are aggressively cached by browsers and the Superset service worker. After deploying, always perform a **Hard Refresh** in your browser:  
+> - **Windows/Linux:** `Ctrl + Shift + R` (or `Ctrl + F5`)  
+> - **macOS:** `Cmd + Shift + R`  
+> If an old chart layout still persists, open DevTools (`F12`), right-click the Refresh button in the browser, and select **"Empty Cache and Hard Reload"**.
 
 ---
 
