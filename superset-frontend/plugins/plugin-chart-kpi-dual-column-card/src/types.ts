@@ -71,6 +71,11 @@ export interface KpiDualColumnCardCustomizeProps {
 
   // Layout
   alignment: Alignment;
+  rowLayoutMode?: 'space_between' | 'compact';
+  columnGap?: number;
+  keyColumnWidth?: number;
+  contentMaxWidth?: number;
+  valueHeader?: string;
   rowSpacing: number;
   valuePadding: number;
   borderRadius: number;

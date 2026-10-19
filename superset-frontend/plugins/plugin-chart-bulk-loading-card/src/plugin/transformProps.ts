@@ -47,10 +47,21 @@ export default function transformProps(
       '',
     ),
     elapsedTimeColumn: getProp('elapsed_time_column', 'elapsedTimeColumn', ''),
+    orderLabelColumn: getProp('order_label_column', 'orderLabelColumn', ''),
+    tankLabelColumn: getProp('tank_label_column', 'tankLabelColumn', ''),
+    timerLabelColumn: getProp('timer_label_column', 'timerLabelColumn', ''),
 
     titleText: getProp('title_text', 'titleText', 'Bulk Loading'),
     showTruckGraphic:
       getProp('show_truck_graphic', 'showTruckGraphic', true) !== false,
+    customTruckImage: getProp('custom_truck_image', 'customTruckImage', ''),
+    customTruckImageUrl: getProp(
+      'custom_truck_image_url',
+      'customTruckImageUrl',
+      '',
+    ),
+    truckImageWidth: Number(getProp('truck_image_width', 'truckImageWidth', 200)) || 200,
+    truckImageHeight: Number(getProp('truck_image_height', 'truckImageHeight', 65)) || 65,
     showStatusPipeline:
       getProp('show_status_pipeline', 'showStatusPipeline', true) !== false,
     activeStatusColor: getProp(
@@ -65,6 +76,7 @@ export default function transformProps(
       Number(getProp('work_order_font_size', 'workOrderFontSize', 26)) || 26,
     timerColor: getProp('timer_color', 'timerColor', '#0F2F57'),
     tankBadgeColor: getProp('tank_badge_color', 'tankBadgeColor', '#0F2F57'),
+    fontFamily: getProp('font_family', 'fontFamily', 'Inter'),
   };
 
   return {

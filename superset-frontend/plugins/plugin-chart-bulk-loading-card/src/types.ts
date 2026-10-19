@@ -31,10 +31,17 @@ export interface BulkLoadingCardCustomizeProps {
   statusColumn?: string;
   destinationTankColumn?: string;
   elapsedTimeColumn?: string;
+  orderLabelColumn?: string;
+  tankLabelColumn?: string;
+  timerLabelColumn?: string;
 
   // Visual Customizations
   titleText: string;
   showTruckGraphic: boolean;
+  customTruckImage?: string;
+  customTruckImageUrl?: string;
+  truckImageWidth?: number;
+  truckImageHeight?: number;
   showStatusPipeline: boolean;
   activeStatusColor: string;
   cardBgColor: string;
@@ -43,6 +50,7 @@ export interface BulkLoadingCardCustomizeProps {
   workOrderFontSize: number;
   timerColor: string;
   tankBadgeColor: string;
+  fontFamily?: string;
 }
 
 export interface BulkLoadingCardProps extends BulkLoadingCardStylesProps {

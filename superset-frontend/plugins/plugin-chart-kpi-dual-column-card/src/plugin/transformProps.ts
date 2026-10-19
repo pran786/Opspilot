@@ -124,6 +124,17 @@ export default function transformProps(
 
   // Layout
   const alignment = getProp('alignment', 'alignment', 'left') as Alignment;
+  const rowLayoutMode = getProp(
+    'row_layout_mode',
+    'rowLayoutMode',
+    'space_between',
+  ) as 'space_between' | 'compact';
+  const columnGap = Number(getProp('column_gap', 'columnGap', 48)) || 48;
+  const keyColumnWidth =
+    Number(getProp('key_column_width', 'keyColumnWidth', 190)) || 190;
+  const contentMaxWidth =
+    Number(getProp('content_max_width', 'contentMaxWidth', 0)) || 0;
+  const valueHeader = String(getProp('value_header', 'valueHeader', '') || '');
   const rowSpacing = Number(getProp('row_spacing', 'rowSpacing', 12)) || 12;
   const valuePadding = Number(getProp('value_padding', 'valuePadding', 6)) || 6;
   const borderRadius = Number(getProp('border_radius', 'borderRadius', 4)) || 4;
@@ -169,6 +180,11 @@ export default function transformProps(
     globalValueColor,
     textTransform,
     alignment,
+    rowLayoutMode,
+    columnGap,
+    keyColumnWidth,
+    contentMaxWidth,
+    valueHeader,
     rowSpacing,
     valuePadding,
     borderRadius,

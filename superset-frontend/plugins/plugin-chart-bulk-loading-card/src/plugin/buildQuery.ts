@@ -40,6 +40,9 @@ export default function buildQuery(formData: QueryFormData) {
   addCol(getCol('status_column', 'statusColumn'));
   addCol(getCol('destination_tank_column', 'destinationTankColumn'));
   addCol(getCol('elapsed_time_column', 'elapsedTimeColumn'));
+  addCol(getCol('order_label_column', 'orderLabelColumn'));
+  addCol(getCol('tank_label_column', 'tankLabelColumn'));
+  addCol(getCol('timer_label_column', 'timerLabelColumn'));
 
   if (Array.isArray(formData.groupby)) {
     formData.groupby.forEach((col: QueryFormColumn) => addCol(col));

@@ -26,6 +26,7 @@ const Container = styled.div<{
   height: number;
   bg: string;
   border: string;
+  fontFamily?: string;
 }>`
   width: ${props => props.width}px;
   height: ${props => props.height}px;
@@ -35,9 +36,10 @@ const Container = styled.div<{
   padding: 8px 12px;
   box-sizing: border-box;
   overflow: auto;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial,
-    sans-serif;
+  font-family: ${props =>
+    props.fontFamily === 'Inter' || !props.fontFamily
+      ? '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif'
+      : props.fontFamily};
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -55,6 +57,7 @@ const SectionTitle = styled.div`
   font-weight: 700;
   color: #9ca3af;
   letter-spacing: -0.3px;
+  font-family: inherit;
 `;
 
 const LoadingRow = styled.div`
@@ -81,6 +84,7 @@ const SubLabel = styled.div<{ color?: string }>`
   color: ${props => props.color || '#9ca3af'};
   letter-spacing: 0.5px;
   min-height: 16px;
+  font-family: inherit;
 `;
 
 const WorkOrderId = styled.div<{ fontSize: number }>`
@@ -89,6 +93,7 @@ const WorkOrderId = styled.div<{ fontSize: number }>`
   color: #0f2f57;
   letter-spacing: -0.5px;
   line-height: 1.1;
+  font-family: inherit;
 `;
 
 const MaterialName = styled.div<{ fontSize?: number }>`
@@ -97,6 +102,7 @@ const MaterialName = styled.div<{ fontSize?: number }>`
   color: #2b6cb0;
   text-transform: uppercase;
   margin-top: 2px;
+  font-family: inherit;
 `;
 
 const FlowCenter = styled.div`
@@ -181,6 +187,7 @@ const ChevronBadge = styled.div<{ bg: string }>`
   min-width: 120px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
   text-transform: uppercase;
+  font-family: inherit;
 `;
 
 const HorizontalArrow = styled.div`
@@ -218,6 +225,7 @@ const TankBadge = styled.div<{ color: string; fontSize?: number }>`
   font-weight: 800;
   color: ${props => props.color};
   line-height: 1.1;
+  font-family: inherit;
 `;
 
 const TimerText = styled.div<{ color: string; fontSize?: number }>`
@@ -225,8 +233,8 @@ const TimerText = styled.div<{ color: string; fontSize?: number }>`
   font-weight: 800;
   color: ${props => props.color};
   line-height: 1.1;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: inherit;
+  font-variant-numeric: tabular-nums;
 `;
 
 const EmptyState = styled.div`
@@ -236,7 +244,47 @@ const EmptyState = styled.div`
   height: 100%;
   color: #9ca3af;
   font-style: italic;
+  font-family: inherit;
 `;
+
+const sanitizeLabelText = (val: unknown, fallback: string): string => {
+  if (val === null || val === undefined) return fallback;
+  const s = String(val).trim();
+  if (!s) return fallback;
+  if (s === 'Dfwlyh') return 'Active';
+  if (s === 'Xsfrp lqj') return 'Upcoming';
+  if (s === 'Wdqn') return 'Tank';
+  if (s === 'Wlp h#lq#Ed|' || s.includes('Wlp h')) return 'Time in Bay';
+  return s;
+};
+
+const VehicleGraphic: React.FC<{
+  show?: boolean;
+  customImage?: string;
+  customImageUrl?: string;
+  width?: number;
+  height?: number;
+}> = ({ show, customImage, customImageUrl, width = 200, height = 65 }) => {
+  if (show === false) return null;
+  const imageSrc = customImage || customImageUrl;
+  if (imageSrc) {
+    return (
+      <img
+        src={imageSrc}
+        alt="Vehicle graphic"
+        style={{
+          maxWidth: width,
+          maxHeight: height,
+          width: 'auto',
+          height: 'auto',
+          objectFit: 'contain',
+          display: 'block',
+        }}
+      />
+    );
+  }
+  return <TankerTruckSvg width={width} height={height} />;
+};
 
 // ─── Chart Error Boundary ──────────────────────────────────────────
 class ChartErrorBoundary extends React.Component<
@@ -299,12 +347,17 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
         height={height}
         bg={cardBgColor}
         border={cardBorderColor}
+        fontFamily={c.fontFamily}
       >
         <HeaderRow>
           <SectionTitle>{titleText}</SectionTitle>
-          {c.showTruckGraphic !== false && (
-            <TankerTruckSvg width={180} height={56} />
-          )}
+          <VehicleGraphic
+            show={c.showTruckGraphic !== false}
+            customImage={c.customTruckImage}
+            customImageUrl={c.customTruckImageUrl}
+            width={c.truckImageWidth || 180}
+            height={c.truckImageHeight || 56}
+          />
         </HeaderRow>
         <EmptyState>No Active Bulk Loading Operations</EmptyState>
       </Container>
@@ -317,12 +370,17 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
       height={height}
       bg={cardBgColor}
       border={cardBorderColor}
+      fontFamily={c.fontFamily}
     >
       <HeaderRow>
         <SectionTitle>{titleText}</SectionTitle>
-        {c.showTruckGraphic !== false && (
-          <TankerTruckSvg width={230} height={72} />
-        )}
+        <VehicleGraphic
+          show={c.showTruckGraphic !== false}
+          customImage={c.customTruckImage}
+          customImageUrl={c.customTruckImageUrl}
+          width={c.truckImageWidth || 230}
+          height={c.truckImageHeight || 72}
+        />
       </HeaderRow>
       {data.map((record, index) => {
         const workOrder =
@@ -347,11 +405,35 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
           record?.elapsed_time ||
           null;
 
+        const rawOrderLabel =
+          (c.orderLabelColumn && record?.[c.orderLabelColumn]) ||
+          record?.order_label;
+        const orderLabel = sanitizeLabelText(
+          rawOrderLabel,
+          index === 0 ? 'Active' : 'Upcoming',
+        );
+
+        const rawTankLabel =
+          (c.tankLabelColumn && record?.[c.tankLabelColumn]) ||
+          record?.tank_label;
+        const tankLabel = sanitizeLabelText(
+          rawTankLabel,
+          index === 0 ? 'Tank' : '',
+        );
+
+        const rawTimerLabel =
+          (c.timerLabelColumn && record?.[c.timerLabelColumn]) ||
+          record?.timer_label;
+        const timerLabel = sanitizeLabelText(
+          rawTimerLabel,
+          index === 0 ? 'Time in Bay' : '',
+        );
+
         return (
           <LoadingRow key={String(workOrder) + index}>
             <MaterialInfo>
               <SubLabel color={index === 0 ? '#EAB308' : '#94A3B8'}>
-                {record?.order_label || (index === 0 ? 'Dfwlyh' : 'Xsfrp lqj')}
+                {orderLabel}
               </SubLabel>
               <WorkOrderId fontSize={c.workOrderFontSize || 34}>
                 {workOrder}
@@ -378,9 +460,7 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
 
             <DestinationBlock>
               <SubCol>
-                <SubLabel>
-                  {record?.tank_label || (index === 0 ? 'Wdqn' : '')}
-                </SubLabel>
+                <SubLabel>{tankLabel}</SubLabel>
                 <TankBadge
                   color={c.tankBadgeColor || '#0F2F57'}
                   fontSize={c.workOrderFontSize || 32}
@@ -389,9 +469,7 @@ const BulkLoadingCardChartContent: React.FC<BulkLoadingCardProps> = ({
                 </TankBadge>
               </SubCol>
               <SubCol>
-                <SubLabel>
-                  {record?.timer_label || (index === 0 ? 'Wlp h#lq#Ed|' : '')}
-                </SubLabel>
+                <SubLabel>{timerLabel}</SubLabel>
                 {elapsedTime ? (
                   <TimerText
                     color={c.timerColor || '#0F2F57'}

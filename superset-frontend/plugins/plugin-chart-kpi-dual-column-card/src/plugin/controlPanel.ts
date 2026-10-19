@@ -446,6 +446,85 @@ const config: ControlPanelConfig = {
       controlSetRows: [
         [
           {
+            name: 'row_layout_mode',
+            config: {
+              type: 'SelectControl',
+              label: t('Row Layout Mode'),
+              description: t(
+                'Space Between pushes key and value to opposite edges. Compact aligns them closely with custom gap.',
+              ),
+              default: 'space_between',
+              choices: [
+                ['space_between', t('Space Between (Full Width)')],
+                ['compact', t('Compact / Fixed Spacing (Adjustable Gap)')],
+              ],
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'column_gap',
+            config: {
+              type: 'TextControl',
+              label: t('Column Gap (px)'),
+              description: t(
+                'Spacing between Key label and Value in Compact mode (e.g. 48)',
+              ),
+              default: 48,
+              renderTrigger: true,
+              isInt: true,
+              visibility: ({ controls }: any) =>
+                controls?.row_layout_mode?.value === 'compact',
+            },
+          },
+        ],
+        [
+          {
+            name: 'key_column_width',
+            config: {
+              type: 'TextControl',
+              label: t('Key Column Width (px)'),
+              description: t(
+                'Fixed width for Key column in Compact mode (e.g. 190)',
+              ),
+              default: 190,
+              renderTrigger: true,
+              isInt: true,
+              visibility: ({ controls }: any) =>
+                controls?.row_layout_mode?.value === 'compact',
+            },
+          },
+        ],
+        [
+          {
+            name: 'content_max_width',
+            config: {
+              type: 'TextControl',
+              label: t('Content Max Width (px)'),
+              description: t(
+                'Max width constraint for row content (0 for full card width, e.g. 380)',
+              ),
+              default: 0,
+              renderTrigger: true,
+              isInt: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'value_header',
+            config: {
+              type: 'TextControl',
+              label: t('Value Header Label'),
+              description: t('Optional column label above values'),
+              default: '',
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
             name: 'alignment',
             config: {
               type: 'SelectControl',

@@ -23,6 +23,7 @@ import {
   sections,
   sharedControls,
 } from '@superset-ui/chart-controls';
+import ImageUploadControl from './ImageUploadControl';
 
 const config: ControlPanelConfig = {
   controlPanelSections: [
@@ -87,6 +88,45 @@ const config: ControlPanelConfig = {
             },
           },
         ],
+        [
+          {
+            name: 'order_label_column',
+            config: {
+              ...sharedControls.groupby,
+              label: t('Order Sub-Label Column (Active / Upcoming)'),
+              description: t(
+                'Column containing order stage or label (e.g. Active, Upcoming, Queued)',
+              ),
+              multi: false,
+            },
+          },
+        ],
+        [
+          {
+            name: 'tank_label_column',
+            config: {
+              ...sharedControls.groupby,
+              label: t('Destination Tank Label Column'),
+              description: t(
+                'Column containing header label for tank (e.g. Tank, Silo, Bay)',
+              ),
+              multi: false,
+            },
+          },
+        ],
+        [
+          {
+            name: 'timer_label_column',
+            config: {
+              ...sharedControls.groupby,
+              label: t('Timer Header Label Column'),
+              description: t(
+                'Column containing header label for timer (e.g. Time in Bay, Remaining)',
+              ),
+              multi: false,
+            },
+          },
+        ],
       ],
     },
     {
@@ -109,9 +149,73 @@ const config: ControlPanelConfig = {
             name: 'show_truck_graphic',
             config: {
               type: 'CheckboxControl',
-              label: t('Show Tanker Truck Graphic'),
+              label: t('Show Vehicle Graphic'),
               default: true,
               renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'custom_truck_image',
+            config: {
+              type: ImageUploadControl,
+              label: t('Upload Custom Vehicle / Logo Image'),
+              description: t(
+                'Upload a PNG, SVG, JPG, or WebP image to replace the tanker truck illustration (Max 3 MB)',
+              ),
+              default: '',
+              renderTrigger: true,
+              visibility: ({ controls }: any) =>
+                controls?.show_truck_graphic?.value !== false,
+            },
+          },
+        ],
+        [
+          {
+            name: 'custom_truck_image_url',
+            config: {
+              type: 'TextControl',
+              label: t('Or Custom Vehicle Image URL / Path'),
+              description: t(
+                'Web URL or relative path to vehicle image (e.g. /static/assets/images/custom_truck.png)',
+              ),
+              default: '',
+              renderTrigger: true,
+              visibility: ({ controls }: any) =>
+                controls?.show_truck_graphic?.value !== false,
+            },
+          },
+        ],
+        [
+          {
+            name: 'truck_image_width',
+            config: {
+              type: 'SliderControl',
+              label: t('Vehicle Image Width (px)'),
+              default: 200,
+              min: 60,
+              max: 400,
+              step: 5,
+              renderTrigger: true,
+              visibility: ({ controls }: any) =>
+                controls?.show_truck_graphic?.value !== false,
+            },
+          },
+        ],
+        [
+          {
+            name: 'truck_image_height',
+            config: {
+              type: 'SliderControl',
+              label: t('Vehicle Image Height (px)'),
+              default: 65,
+              min: 30,
+              max: 150,
+              step: 5,
+              renderTrigger: true,
+              visibility: ({ controls }: any) =>
+                controls?.show_truck_graphic?.value !== false,
             },
           },
         ],
@@ -132,10 +236,29 @@ const config: ControlPanelConfig = {
             config: {
               type: 'SliderControl',
               label: t('Work Order Font Size (px)'),
-              default: 20,
+              default: 34,
               min: 14,
-              max: 36,
+              max: 48,
               step: 1,
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'font_family',
+            config: {
+              type: 'SelectControl',
+              label: t('Font Family'),
+              description: t('Font family for all card typography'),
+              default: 'Inter',
+              choices: [
+                ['Inter', 'Inter (Matches OpsPilot)'],
+                ['Roboto', 'Roboto'],
+                ['Segoe UI', 'Segoe UI'],
+                ['Arial', 'Arial'],
+                ['system', 'System Default'],
+              ],
               renderTrigger: true,
             },
           },

@@ -218,12 +218,34 @@ const CardTitle = styled.div<{
   letter-spacing: 0.5px;
 `;
 
+const ContentContainer = styled.div<{
+  maxWidth?: number;
+  alignment?: string;
+}>`
+  width: 100%;
+  ${({ maxWidth }) =>
+    maxWidth && maxWidth > 0 ? `max-width: ${maxWidth}px;` : ''}
+  ${({ alignment }) => {
+    if (alignment === 'center') return 'margin-left: auto; margin-right: auto;';
+    if (alignment === 'right') return 'margin-left: auto;';
+    return '';
+  }}
+`;
+
 const RowWrapper = styled.div<{
   spacing: number;
   alignment: string;
+  layoutMode?: 'space_between' | 'compact';
+  columnGap?: number;
 }>`
   display: flex;
-  justify-content: space-between;
+  ${({ layoutMode, columnGap }) =>
+    layoutMode === 'compact'
+      ? `
+        justify-content: flex-start;
+        gap: ${columnGap ?? 48}px;
+      `
+      : 'justify-content: space-between;'}
   align-items: center;
   margin-bottom: ${({ spacing }) => spacing}px;
   text-align: ${({ alignment }) => alignment};
@@ -237,8 +259,13 @@ const KeyCell = styled.span<{
   fontWeight: number;
   color: string;
   transform: string;
+  keyWidth?: number;
+  layoutMode?: 'space_between' | 'compact';
 }>`
-  flex: 1;
+  ${({ layoutMode, keyWidth }) =>
+    layoutMode === 'compact' && keyWidth && keyWidth > 0
+      ? `width: ${keyWidth}px; flex-shrink: 0;`
+      : 'flex: 1;'}
   font-size: ${({ fontSize }) => fontSize}px;
   font-weight: ${({ fontWeight }) => fontWeight};
   color: ${({ color }) => color};
@@ -246,10 +273,13 @@ const KeyCell = styled.span<{
   line-height: 1.4;
 `;
 
-const ValueColumnWrapper = styled.div`
+const ValueColumnWrapper = styled.div<{
+  layoutMode?: 'space_between' | 'compact';
+}>`
   flex-shrink: 0;
   display: flex;
-  justify-content: flex-end;
+  justify-content: ${({ layoutMode }) =>
+    layoutMode === 'compact' ? 'flex-start' : 'flex-end'};
 `;
 
 const ValueCell = styled.span<{
@@ -402,15 +432,19 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
     valueFontWeight,
     globalKeyColor,
     globalValueColor,
-    textTransform,
-    alignment,
-    rowSpacing,
-    valuePadding,
-    borderRadius,
-    containerPadding,
-    containerBgColor,
-    enableShadow,
-  } = customize || {};
+    textTransform = 'none',
+    alignment = 'left',
+    rowLayoutMode = 'space_between',
+    columnGap = 48,
+    keyColumnWidth = 190,
+    contentMaxWidth = 0,
+    rowSpacing = 12,
+    valuePadding = 6,
+    borderRadius = 4,
+    containerPadding = 16,
+    containerBgColor = 'transparent',
+    enableShadow = false,
+  } = (customize || {}) as any;
 
   // ── Measure uniform value‑box width ────────────────────────────
   const measureRef = useRef<HTMLDivElement>(null);
@@ -555,8 +589,13 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
   const renderHeader = () => {
     const iconEl = renderIcon();
     const title = customize.titleText;
-    const valueHeader =
+    const rawValueHeader =
       (customize as any).valueHeader || (customize as any).value_header;
+    const valueHeader =
+      rawValueHeader &&
+      (rawValueHeader.includes('Wlp h') || rawValueHeader === 'Wlp h#lq#Ed|')
+        ? ''
+        : rawValueHeader;
     if (!iconEl && !title && !valueHeader) return null;
 
     const isCentered = headerMode === 'icon_centered' && !title;
@@ -696,99 +735,105 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
       shadow={enableShadow}
       borderRadius={borderRadius}
     >
-      {/* Hidden measurement container for uniform box sizing */}
-      {hasAnyBox && (
-        <MeasureContainer ref={measureRef}>
-          {data.map((record, idx) => (
-            <span
-              key={idx}
-              style={{
-                fontSize: valueFontSize,
-                fontWeight: valueFontWeight,
-                textTransform: textTransform as any,
-                display: 'inline-block',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {String(record[valueColumn] ?? '')}
-            </span>
-          ))}
-        </MeasureContainer>
-      )}
-
-      {!groupColumn && renderHeader()}
-
-      {groups.map((group, groupIdx) => (
-        <div
-          key={groupIdx}
-          style={
-            groupIdx > 0
-              ? { marginTop: Math.round((rowSpacing || 12) * 1.5) }
-              : undefined
-          }
-        >
-          {groupColumn && (
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                marginBottom: iconSpacing || 8,
-              }}
-            >
-              {renderGroupIcon(group.groupKey, group.records)}
-            </div>
-          )}
-          {group.records.map((record, index) => {
-            const key = record[keyColumn] ?? '';
-            const val = record[valueColumn] ?? '';
-
-            // Box color: from column if present
-            const boxColor =
-              valBoxColorColumn && record[valBoxColorColumn]
-                ? String(record[valBoxColorColumn])
-                : '';
-
-            // Value text color priority: column > global
-            const valColor =
-              valTextColorColumn && record[valTextColorColumn]
-                ? String(record[valTextColorColumn])
-                : globalValueColor;
-
-            return (
-              <RowWrapper
-                key={index}
-                spacing={rowSpacing}
-                alignment={alignment}
+      <ContentContainer maxWidth={contentMaxWidth} alignment={alignment}>
+        {/* Hidden measurement container for uniform box sizing */}
+        {hasAnyBox && (
+          <MeasureContainer ref={measureRef}>
+            {data.map((record, idx) => (
+              <span
+                key={idx}
+                style={{
+                  fontSize: valueFontSize,
+                  fontWeight: valueFontWeight,
+                  textTransform: textTransform as any,
+                  display: 'inline-block',
+                  whiteSpace: 'nowrap',
+                }}
               >
-                <KeyCell
-                  fontSize={keyFontSize}
-                  fontWeight={keyFontWeight}
-                  color={globalKeyColor}
-                  transform={textTransform}
-                >
-                  {String(key)}
-                </KeyCell>
+                {String(record[valueColumn] ?? '')}
+              </span>
+            ))}
+          </MeasureContainer>
+        )}
 
-                <ValueColumnWrapper>
-                  <ValueCell
-                    fontSize={valueFontSize}
-                    fontWeight={valueFontWeight}
-                    color={valColor}
+        {!groupColumn && renderHeader()}
+
+        {groups.map((group, groupIdx) => (
+          <div
+            key={groupIdx}
+            style={
+              groupIdx > 0
+                ? { marginTop: Math.round((rowSpacing || 12) * 1.5) }
+                : undefined
+            }
+          >
+            {groupColumn && (
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginBottom: iconSpacing || 8,
+                }}
+              >
+                {renderGroupIcon(group.groupKey, group.records)}
+              </div>
+            )}
+            {group.records.map((record, index) => {
+              const key = record[keyColumn] ?? '';
+              const val = record[valueColumn] ?? '';
+
+              // Box color: from column if present
+              const boxColor =
+                valBoxColorColumn && record[valBoxColorColumn]
+                  ? String(record[valBoxColorColumn])
+                  : '';
+
+              // Value text color priority: column > global
+              const valColor =
+                valTextColorColumn && record[valTextColorColumn]
+                  ? String(record[valTextColorColumn])
+                  : globalValueColor;
+
+              return (
+                <RowWrapper
+                  key={index}
+                  spacing={rowSpacing}
+                  alignment={alignment}
+                  layoutMode={rowLayoutMode}
+                  columnGap={columnGap}
+                >
+                  <KeyCell
+                    fontSize={keyFontSize}
+                    fontWeight={keyFontWeight}
+                    color={globalKeyColor}
                     transform={textTransform}
-                    hasBox={!!boxColor}
-                    boxColor={boxColor}
-                    padding={valuePadding}
-                    borderRadius={borderRadius}
-                    uniformWidth={boxColor ? uniformWidth : 0}
+                    layoutMode={rowLayoutMode}
+                    keyWidth={keyColumnWidth}
                   >
-                    {String(val)}
-                  </ValueCell>
-                </ValueColumnWrapper>
-              </RowWrapper>
-            );
-          })}
-        </div>
-      ))}
+                    {String(key)}
+                  </KeyCell>
+
+                  <ValueColumnWrapper layoutMode={rowLayoutMode}>
+                    <ValueCell
+                      fontSize={valueFontSize}
+                      fontWeight={valueFontWeight}
+                      color={valColor}
+                      transform={textTransform}
+                      hasBox={!!boxColor}
+                      boxColor={boxColor}
+                      padding={valuePadding}
+                      borderRadius={borderRadius}
+                      uniformWidth={boxColor ? uniformWidth : 0}
+                    >
+                      {String(val)}
+                    </ValueCell>
+                  </ValueColumnWrapper>
+                </RowWrapper>
+              );
+            })}
+          </div>
+        ))}
+      </ContentContainer>
     </CardContainer>
   );
 }
