@@ -43,6 +43,7 @@ export interface UnifiedListBarChartCustomizeProps {
   showBar: boolean;
   showMetricValue: boolean;
   keyFontSize: number;
+  keyFontWeight?: number | string;
   keyColor: string;
   keySubFontSize: number;
   keySubColor?: string;

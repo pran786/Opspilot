@@ -179,6 +179,7 @@ export default function transformProps(
     globalKeyColor,
     globalValueColor,
     textTransform,
+    fontFamily: getProp('font_family', 'fontFamily', 'Inter'),
     alignment,
     rowLayoutMode,
     columnGap,

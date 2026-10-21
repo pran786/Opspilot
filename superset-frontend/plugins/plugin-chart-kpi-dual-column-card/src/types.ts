@@ -68,6 +68,7 @@ export interface KpiDualColumnCardCustomizeProps {
   globalKeyColor: string;
   globalValueColor: string;
   textTransform: TextTransform;
+  fontFamily?: string;
 
   // Layout
   alignment: Alignment;

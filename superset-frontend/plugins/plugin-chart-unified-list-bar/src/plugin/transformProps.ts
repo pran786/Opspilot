@@ -155,6 +155,10 @@ export default function transformProps(
     showBar: showBar,
     showMetricValue: showMetricValue,
     keyFontSize: Number(keyFontSize) || 16,
+    keyFontWeight:
+      (formData as any).keyFontWeight ||
+      (formData as any).key_font_weight ||
+      800,
     keyColor: rgbaToString(keyColor || (formData as any).key_color),
     keySubFontSize: Number(keySubFontSize) || 11,
     keySubColor:

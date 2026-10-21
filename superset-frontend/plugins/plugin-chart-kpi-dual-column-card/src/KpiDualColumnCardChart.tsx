@@ -178,6 +178,7 @@ const CardContainer = styled.div<{
   padding: number;
   shadow: boolean;
   borderRadius?: number;
+  fontFamily?: string;
 }>`
   height: ${({ height }) => height}px;
   width: ${({ width }) => width}px;
@@ -191,7 +192,10 @@ const CardContainer = styled.div<{
   border-radius: ${({ borderRadius }) => borderRadius || 0}px;
   padding: ${({ padding }) => padding}px;
   box-sizing: border-box;
-  font-family: ${({ theme }) => getFontFamily(theme)};
+  font-family: ${({ fontFamily, theme }) =>
+    fontFamily && fontFamily !== 'Inter'
+      ? fontFamily
+      : getFontFamily(theme)};
   ${({ shadow }) =>
     shadow ? 'box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);' : ''}
 `;
@@ -734,6 +738,7 @@ function KpiDualColumnCardChartContent(props: KpiDualColumnCardProps) {
       padding={containerPadding}
       shadow={enableShadow}
       borderRadius={borderRadius}
+      fontFamily={customize?.fontFamily}
     >
       <ContentContainer maxWidth={contentMaxWidth} alignment={alignment}>
         {/* Hidden measurement container for uniform box sizing */}

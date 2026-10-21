@@ -51,10 +51,10 @@
         "/static/assets/4873.dc7e0d60af5f8c3cab74.entry.js",
         "/static/assets/9494.28a95832ba4813ecee73.entry.js",
         "/static/assets/8994.6c058d806a0dedba067a.entry.js",
-        "/static/assets/4377.4227aa14032b8f806feb.entry.js",
+        "/static/assets/4377.e595d1881b75925230fe.entry.js",
         "/static/assets/3264.a097a4fdf482e4c0aee2.entry.js",
         "/static/assets/1582.c6dd9453f3777301de1d.entry.js",
-        "/static/assets/spa.47d7a3fdfd9d00892b0b.entry.js"
+        "/static/assets/spa.e53b417b300add40c5f7.entry.js"
       ]
     },
     "embedded": {
@@ -75,8 +75,8 @@
         "/static/assets/4873.dc7e0d60af5f8c3cab74.entry.js",
         "/static/assets/9494.28a95832ba4813ecee73.entry.js",
         "/static/assets/878.71dad79896e6d9eb9ed2.entry.js",
-        "/static/assets/4377.4227aa14032b8f806feb.entry.js",
-        "/static/assets/embedded.4a46264613e2468dff61.entry.js"
+        "/static/assets/4377.e595d1881b75925230fe.entry.js",
+        "/static/assets/embedded.4701dc5377773f420dbc.entry.js"
       ]
     },
     "service-worker": {

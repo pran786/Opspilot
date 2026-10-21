@@ -246,6 +246,66 @@ const config: ControlPanelConfig = {
         ],
         [
           {
+            name: 'tank_badge_color',
+            config: {
+              type: 'TextControl',
+              label: t('Destination Tank Badge Color'),
+              description: t('CSS color for tank badge (e.g. #0F2F57)'),
+              default: '#0F2F57',
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'timer_color',
+            config: {
+              type: 'TextControl',
+              label: t('Timer Color'),
+              description: t('CSS color for timer text (e.g. #0F2F57)'),
+              default: '#0F2F57',
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'card_bg_color',
+            config: {
+              type: 'TextControl',
+              label: t('Card Background Color'),
+              description: t('CSS color for card background (e.g. transparent or #FFFFFF)'),
+              default: 'transparent',
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'card_border_color',
+            config: {
+              type: 'TextControl',
+              label: t('Card Border Color'),
+              description: t('CSS border property (e.g. none or 1px solid #E2E8F0)'),
+              default: 'none',
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'active_status_color',
+            config: {
+              type: 'TextControl',
+              label: t('Active Status Color'),
+              description: t('CSS color for active status badge (e.g. #F59E0B)'),
+              default: '#F59E0B',
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
             name: 'font_family',
             config: {
               type: 'SelectControl',

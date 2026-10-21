@@ -189,7 +189,11 @@ export const Row: React.FC<RowProps> = ({
     <RowContainer rowsPerItem={rowsPerItem} rowPadding={rowPadding}>
       {/* Left: Key Column with optional sub-text */}
       <KeySection minWidth={keyWidth}>
-        <KeyField fontSize={keyFontSize} color={effectiveKeyColor}>
+        <KeyField
+          fontSize={keyFontSize}
+          color={effectiveKeyColor}
+          fontWeight={customize?.keyFontWeight || 800}
+        >
           {safeHtmlSpan(String(keyValue))}
         </KeyField>
         {keySubValue !== undefined && (

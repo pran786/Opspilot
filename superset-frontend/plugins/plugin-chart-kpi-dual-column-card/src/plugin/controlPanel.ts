@@ -115,11 +115,48 @@ const config: ControlPanelConfig = {
       ],
     },
 
-    // ── HEADER / ICON SECTION ──────────────────────────────────
+    // ── TITLE & HEADER / ICON SECTION ─────────────────────────
     {
-      label: t('Header / Icon'),
-      expanded: false,
+      label: t('Title & Header / Icon'),
+      expanded: true,
       controlSetRows: [
+        [
+          {
+            name: 'title_text',
+            config: {
+              type: 'TextControl',
+              label: t('Card Title'),
+              description: t(
+                'Title displayed at top of the card (e.g. Demurrage Risk, Resources)',
+              ),
+              default: '',
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'title_font_size',
+            config: {
+              type: 'TextControl',
+              label: t('Title Font Size (px)'),
+              default: 24,
+              renderTrigger: true,
+              isInt: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'title_color',
+            config: {
+              type: 'TextControl',
+              label: t('Title Color'),
+              default: '#9CA3AF',
+              renderTrigger: true,
+            },
+          },
+        ],
         [
           {
             name: 'header_mode',
@@ -371,6 +408,8 @@ const config: ControlPanelConfig = {
                 [500, '500 (Medium)'],
                 [600, '600 (Semi-Bold)'],
                 [700, '700 (Bold)'],
+                [800, '800 (Extra-Bold)'],
+                [900, '900 (Black)'],
               ],
               renderTrigger: true,
             },
@@ -389,6 +428,8 @@ const config: ControlPanelConfig = {
                 [500, '500 (Medium)'],
                 [600, '600 (Semi-Bold)'],
                 [700, '700 (Bold)'],
+                [800, '800 (Extra-Bold)'],
+                [900, '900 (Black)'],
               ],
               renderTrigger: true,
             },
@@ -431,6 +472,24 @@ const config: ControlPanelConfig = {
                 ['none', t('None')],
                 ['uppercase', t('UPPERCASE')],
                 ['capitalize', t('Capitalize')],
+              ],
+              renderTrigger: true,
+            },
+          },
+        ],
+        [
+          {
+            name: 'font_family',
+            config: {
+              type: 'SelectControl',
+              label: t('Font Family'),
+              default: 'Inter',
+              choices: [
+                ['Inter', 'Inter (Matches OpsPilot)'],
+                ['Roboto', 'Roboto'],
+                ['Segoe UI', 'Segoe UI'],
+                ['Arial', 'Arial'],
+                ['system', 'System Default'],
               ],
               renderTrigger: true,
             },

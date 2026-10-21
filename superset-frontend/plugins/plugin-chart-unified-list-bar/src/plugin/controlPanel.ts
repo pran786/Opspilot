@@ -24,6 +24,104 @@ const config: ControlPanelConfig = {
     controlPanelSections: [
         sections.legacyTimeseriesTime,
         {
+            label: t('Header / Title'),
+            expanded: true,
+            controlSetRows: [
+                [
+                    {
+                        name: 'header_title',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Header Title'),
+                            description: t('Title above the list (e.g. Hot List, Upcoming Deliveries)'),
+                            default: '',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'header_title_font_size',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Header Title Font Size (px)'),
+                            default: 26,
+                            renderTrigger: true,
+                            isInt: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'header_title_color',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Header Title Color'),
+                            description: t('CSS color for header title (e.g. #8E9AA8)'),
+                            default: '#8E9AA8',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'header_subtitle',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Header Subtitle'),
+                            default: '',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'header_subtitle_color',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Header Subtitle Color'),
+                            default: '#2B6CB0',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'header_badge',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Header Badge Text'),
+                            default: '',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'header_badge_font_size',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Header Badge Font Size (px)'),
+                            default: 30,
+                            renderTrigger: true,
+                            isInt: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'header_badge_color',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Header Badge Color'),
+                            default: '#DC2626',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+            ],
+        },
+        {
             label: t('Query'),
             expanded: true,
             controlSetRows: [
@@ -278,6 +376,26 @@ const config: ControlPanelConfig = {
                 ],
                 [
                     {
+                        name: 'key_font_weight',
+                        config: {
+                            type: 'SelectControl',
+                            label: t('Key Font Weight'),
+                            default: 800,
+                            choices: [
+                                [300, '300 (Light)'],
+                                [400, '400 (Normal)'],
+                                [500, '500 (Medium)'],
+                                [600, '600 (Semi-Bold)'],
+                                [700, '700 (Bold)'],
+                                [800, '800 (Extra-Bold)'],
+                                [900, '900 (Black)'],
+                            ],
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
                         name: 'secondary_font_size',
                         config: {
                             type: 'TextControl',
@@ -290,6 +408,30 @@ const config: ControlPanelConfig = {
                 ],
                 [
                     {
+                        name: 'secondary_color',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Secondary Color'),
+                            description: t('CSS color for secondary columns (e.g. #2B6CB0)'),
+                            default: '#2B6CB0',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'key_sub_color',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Key Sub Text Color'),
+                            description: t('CSS color for key sub-text (e.g. #2B6CB0)'),
+                            default: '#2B6CB0',
+                            renderTrigger: true,
+                        },
+                    },
+                ],
+                [
+                    {
                         name: 'display_value_font_size',
                         config: {
                             type: 'TextControl',
@@ -297,6 +439,18 @@ const config: ControlPanelConfig = {
                             default: 24,
                             renderTrigger: true,
                             isInt: true,
+                        },
+                    },
+                ],
+                [
+                    {
+                        name: 'display_value_color',
+                        config: {
+                            type: 'TextControl',
+                            label: t('Display Value Color'),
+                            description: t('CSS color for display value (e.g. #2B6CB0)'),
+                            default: '#2B6CB0',
+                            renderTrigger: true,
                         },
                     },
                 ],

@@ -73,10 +73,10 @@ export const KeySection = styled.div<{ minWidth?: number }>`
   padding-right: 12px;
 `;
 
-export const KeyField = styled.div<{ fontSize: number; color: string }>`
+export const KeyField = styled.div<{ fontSize: number; color: string; fontWeight?: number | string }>`
   font-size: ${({ fontSize }) => fontSize}px;
   color: ${({ color }) => color};
-  font-weight: 800;
+  font-weight: ${({ fontWeight = 800 }) => fontWeight};
   white-space: nowrap;
   letter-spacing: -0.5px;
 `;
